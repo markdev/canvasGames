@@ -22,7 +22,7 @@
             var bufferCanvasCtx = null;
             var flakeArray = [];
             var flakeTimer = null;
-            var maxFlakes = 200;
+            var maxFlakes = 4000;
 
             function Flake() {
                 this.x = Math.round(Math.random() * context.canvas.width);
@@ -43,7 +43,7 @@
                 bufferCanvasCtx.canvas.height = context.canvas.height;
 
                 //initialize the rects
-                flakeTimer = setInterval(addFlake, 200);
+                flakeTimer = setInterval(addFlake, 2);
 
                 Draw();
 
