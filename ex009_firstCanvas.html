@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 	<script src="jquery-1.7.2.min.js"></script>
+
+	<title>Insert Title Here</title>
+	<style>
+		canvas#canvas1 {
+			border: 1px solid black;
+		}
+	</style>
+	<script>
+		window.onload = function() {
+			var theCanvas = document.getElementById('canvas1');
+			if (theCanvas && theCanvas.getContext) {
+				var ctx = theCanvas.getContext("2d");
+				if (ctx) {
+					ctx.fillStyle = "lightGrey";
+					ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
+					
+					ctx.fillStyle = "green";
+					ctx.fillRect(20,20,100,100);
+					
+					ctx.fillStyle = "red";
+					ctx.fillRect(30,30,130,130);
+					
+					var foo = 60;
+					var bar = 60;
+					var baz = 175;
+					var qux = 175;
+					
+					ctx.lineWidth = 5;
+					ctx.strokeStyle="rgba(0,0,255,1)";
+					ctx.fillStyle = "pink";
+					rect = ctx.strokeRect(foo,bar,baz,qux);
+					ctx.fillRect(rect);
+				}
+			}
+		}
+	</script>
+</head>
+<body>
+<h1>This is the canvas</h1>
+<canvas id="canvas1" height="400" width="400">
+	Your browser does not support canvas
+</canvas>
+
+</body>
+</html>

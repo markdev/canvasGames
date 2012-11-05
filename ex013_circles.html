@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+                margin: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="500" width="700"></canvas>
+
+        X: <input type="text" id="mouseX" size="3" />
+        <br/>
+        Y: <input type="text" id="mouseY" size="3" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var colors = ["red", "blue", "yellow", "teal", "green", "orange", "purple", "pink", "aqua", "white"];
+            var pos1 = [0,0]; // newest
+            var pos2 = [0,0];
+            var pos3 = [0,0];
+            var pos4 = [0,0];
+            var pos5 = [0,0]; // oldest
+
+            function clear() {
+                ctx.fillStyle = "#0BD";
+                ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
+            };
+
+            function drawCircle(e) {
+                clear();
+                var radius = Math.random() * 100;
+                var color = colors[Math.round(Math.random()*10) - 1];
+                var thisX = e.pageX - 50;
+                var thisY = e.pageY - 50;
+
+                pos5 = pos4;
+                pos4 = pos3;
+                pos3 = pos2;
+                pos2 = pos1;
+                pos1 = [thisX, thisY, radius, color];
+
+                //this should be done with a multidimensional array, but I am too lazy
+                ctx.beginPath();
+                ctx.fillStyle = pos1[3];
+                ctx.strokeStyle = "black";
+                ctx.arc(pos1[0], pos1[1], pos1[2], 0, (2*Math.PI));
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = pos2[3];
+                ctx.strokeStyle = "black";
+                ctx.arc(pos2[0], pos2[1], pos2[2], 0, (2*Math.PI));
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = pos3[3];
+                ctx.strokeStyle = "black";
+                ctx.arc(pos3[0], pos3[1], pos3[2], 0, (2*Math.PI));
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = pos4[3];
+                ctx.strokeStyle = "black";
+                ctx.arc(pos4[0], pos4[1], pos4[2], 0, (2*Math.PI));
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = pos5[3];
+                ctx.strokeStyle = "black";
+                ctx.arc(pos5[0], pos5[1], pos5[2], 0, (2*Math.PI));
+                ctx.fill();
+                ctx.stroke();
+            };
+
+            document.onmousemove = drawCircle;
+
+        </script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>

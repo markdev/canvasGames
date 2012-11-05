@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+                margin: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="700" width="700"></canvas>
+
+        X: <input type="text" id="mouseX" size="3" />
+        <br/>
+        Y: <input type="text" id="mouseY" size="3" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext('2d');
+            var charXpos = 0;
+            var dropX = 0;
+            var dropY = 0;
+
+            function clear() {
+                ctx.fillStyle = "#0BD";
+                ctx.fillRect(0, 0, ctx.canvas.height, ctx.canvas.width);
+            }
+
+            function moveChar(e) {
+                charXpos = e.pageX - 50;
+                if (charXpos < 0) {charXpos = 0;}
+                if (charXpos > canvas.width - 50) {charXpos = canvas.width - 50;}
+            };
+
+            function drawChar(){
+                ctx.fillStyle = "red";
+                ctx.strokeStyle = "blue";
+                ctx.fillRect(charXpos, 20, 50, 50);
+                ctx.strokeRect(charXpos, 20, 50, 50);
+            };
+
+            function drawDrop(){
+                ctx.fillStyle = "green";
+                ctx.strokeStyle = "black";
+                ctx.fillRect(dropX, dropY, 50, 50);
+                ctx.strokeRect(dropX, dropY, 50, 50);
+            };
+
+            function drop() {
+                dropY = 0;
+                dropX = charXpos;
+                fall(dropX);
+            };
+
+            function fall(dropX) {
+                s = setInterval(function(){
+                    dropY += 1;
+                }, 1);
+            };
+
+            function render() {
+                clear();
+                drawChar();
+                drawDrop();
+            };
+
+            document.onmousemove = moveChar;
+            document.onclick = drop;
+            setInterval(render, 30);
+        </script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>

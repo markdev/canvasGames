@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Canvas</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    	<style>
+    		canvas#canvas {
+    			height: 500px;
+    			width: 1000px;
+    			background-color: #DDD;
+    		}
+    	</style>
+
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas">Your browser does not support HTML5</canvas>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+    	<script>
+			canvas = document.getElementById('canvas');
+			ctx = canvas.getContext("2d");
+			
+			var poiX = 0;
+			var poiY = 0;
+			var outCenter = 10;
+			var inCenter = 10;
+			
+			setInterval(spin, 30);
+			
+			function clear() {
+				ctx.fillStyle="#00ddee";
+				ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+			}
+			
+			function spin() {
+				clear();
+				var outerX = (Math.sin(outCenter) * 30) + 100;
+				var outerY = (Math.sin(outCenter - (Math.PI/2)) * 30) + 40;
+				
+				var innerX = (Math.sin(inCenter) * 30);
+				var innerY = (Math.sin(inCenter - (Math.PI/2)) * 30);
+				
+				var totalX = outerX + innerX;
+				var totalY = outerY + innerY;
+				
+				ctx.beginPath();
+				ctx.fillStyle="red";
+				ctx.strokeStyle="blue";
+				ctx.arc(totalX,totalY,5,0,2*Math.PI);
+				ctx.fill();
+				ctx.stroke();
+				
+				outCenter += .2;
+				inCenter -= .05;
+			}
+    	</script>
+    </body>
+</html>
