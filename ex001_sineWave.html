@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<style type="text/css">
+			.bar {
+				width: 1px;
+				background-color: blue;
+				margin: 0px;
+				float: left;
+				position: relative;
+				
+				height: 100px;
+			}
+		</style>
+
+	</head>
+	
+	<body>
+		<h1>This is a simple sine wave</h1>
+	</body>
+		<script type="text/javascript">
+		
+			function sine(start) {
+				for (i=start; i<(189+start); i++) {
+					var height = Math.round(Math.sin(i/10) * 30);
+					var topdist = (height >= 0) ? 50 - height : 50;
+					var height = Math.abs(height);
+					document.writeln('<div class="bar" style="height:' + height + 'px; top:' + topdist + 'px;" ></div>');
+				}
+			}
+			
+			sine(20);
+
+		</script>
+</html>

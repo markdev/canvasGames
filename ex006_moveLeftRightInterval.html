@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script>
+			var pos = 0;
+		
+			function move(dir) {
+				if (dir == 'right' && pos < 400) { t = setInterval("moveright()", 5); }
+				if (dir == 'left' && pos > 0) { t = setInterval("moveleft()", 5); }
+			}
+			
+			function moveright() {
+				pos += 1;
+				$("div.mover").css("margin-left", pos);
+				if (pos == 500) {clearInterval(t);}
+			}
+			
+			function moveleft() {
+				pos -= 1;
+				$("div.mover").css("margin-left", pos);
+				if (pos == 0) {clearInterval(t);}
+			}
+			
+			function stop() {
+				clearInterval(t);
+			}
+			
+		</script>
+		<style>
+			div.moverWrapper {
+				height: 100px;
+				width: 600px;
+				padding: 20px;
+				border: 1px solid black;
+				margin: auto;
+				margin-bottom: 10px;	
+			}
+			div.mover {
+				height: 100px;
+				width: 100px;
+				background-color: blue;
+			}
+			div.controlWrapper {
+				width: 340px;
+				margin: auto;
+				padding: 5px;
+			}
+			div.button {
+				width: 150px;
+				height: 80px;
+				background-color: #bbb;
+				border: 4px ridge black;
+				margin: 4px;
+				display: table-cell;
+				vertical-align: middle;
+				float: left;
+			}
+			div.button:active {
+				background-color: #888;
+			}
+		</style>
+	</head>
+	<body>
+	<h1>Move the div thingy left or right!</h1>
+		<div class="moverWrapper">
+			<div class="mover"></div>
+		</div>
+		<div class="controlWrapper">
+			<div class="button" id="buttonLeft" onmousedown="move('left')" onmouseup="stop()">Left</div>
+			<div class="button" id="buttonRight" onmousedown="move('right')" onmouseup="stop()">Right</div>
+		</div>
+	</body>
+</html>

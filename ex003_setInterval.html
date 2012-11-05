@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> 
+<script>
+     //function foo() { $("div.changer").css("background-color", "blue"); }
+    
+    var colors=new Array();
+    colors[0] = "blue";
+    colors[1] = "red";
+    colors[2] = "green";
+    colors[3] = "yellow";
+    
+    var ticker = 0;
+    
+    function foo() {
+        $("div.changer").css("background-color", colors[ticker]);
+        ticker++;
+        if(ticker==4){ticker = 0;}
+    };
+    
+    function change_color() {
+        var number = window.setInterval(function(){foo();}, 500);
+    }
+    
+    function more_color() {
+        morenumber = window.setInterval(function(){foo();}, 500);
+    }
+    
+    //This isn't working, not sure why yet
+    function less_color() {
+        window.clearInterval(3);
+    }
+</script>
+<title>Insert title here</title>
+<style>
+	div.changer {
+		height: 100px;
+		width: 100px;
+		background-color: red;
+	}
+</style>
+</head>
+<body>
+<h1>This simple script demonstrates a setInterval()</h1>
+<h2>Additional setInterval()s are activated when you mouseover</h2>
+
+<div class="changer" onmouseover='more_color()' onmouseout='less_color()';></div>
+
+
+<script>
+change_color();
+</script>
+
+</body>
+</html>

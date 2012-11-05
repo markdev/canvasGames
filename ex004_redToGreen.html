@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+ 	<script>
+ 	function getCursorXY(e) {
+ 		 document.getElementById('cursorX').value = (window.Event) ? e.pageX : event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
+ 		 document.getElementById('cursorY').value = (window.Event) ? e.pageY : event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+
+ 		var xdist = Math.abs(document.getElementById('cursorX').value - 650);
+ 		var ydist = Math.abs(document.getElementById('cursorY').value - 450);
+ 		var distance = Math.abs(parseInt(xdist) + parseInt(ydist));
+ 		document.getElementById('distance').value = distance;
+ 
+ 		var R = 0;
+ 		var G = 0;
+ 		var B = 0;
+ 		
+ 		if (distance > 500) {
+ 			R = 255;
+ 			G = 255 - (distance - 500);
+ 		} else {
+ 			R = distance;
+ 			G = 255;
+ 		}
+ 		
+ 		var rHex = R.toString(16);
+ 		var gHex = G.toString(16);
+ 		var bHex = "00";
+ 		
+ 		document.getElementById('rHex').value = rHex;
+ 		document.getElementById('gHex').value = gHex;
+ 		document.getElementById('bHex').value = bHex;
+ 		
+ 		var hexcolor = "#" + rHex + gHex + bHex;
+ 		
+ 		$('div#changer').css("background-color", hexcolor);
+ 		
+ 		
+ 		// DISTANCE  	800		700		600		500		400		300		200		100
+ 		// COLOR		F00			F60			FF0			6F0			0F0
+ 		
+ 		// F00 = RED
+ 		// FF0 = YELLOW
+ 		// 0F0 = GREEN
+ 	}
+ 	</script>
+	<title>Red to Green</title>
+	<style>
+		div#changer{
+			height: 60px;
+			width: 40px;
+			padding: 100px;
+			position: relative;
+			left: 500px;
+			top: 300px;
+			border: 5px solid black;
+		}
+	</style>
+</head>
+<body>
+
+<h1>It gets green as you go in and red as you go away</h1>
+
+<div id="changer">
+	<input type="text" id="cursorX" size="3">
+	<input type="text" id="cursorY" size="3">
+	<input type="text" id="distance" size="3">
+	<input type="text" id="rHex" size="3">
+	<input type="text" id="gHex" size="3">
+	<input type="text" id="bHex" size="3">
+</div>
+
+<script>
+window.onload = init;
+function init() {
+	if (window.Event) {
+	document.captureEvents(Event.MOUSEMOVE);
+	}
+	document.onmousemove = getCursorXY;
+
+}
+</script>
+
+</body>
+</html>

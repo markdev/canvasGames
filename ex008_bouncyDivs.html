@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script>
+			var t = "";	
+			var pos = [0,0,0,0,0,0,0];
+			var dir = ['down','down','down','down','down','down','down',];
+		
+			function bounce(num) {
+				t = setInterval("upAndDown("+num+")", 1);
+			}
+			
+			function upAndDown(num) {
+				if (dir[num] == 'down') { pos[num] += 2; }
+				else if (dir[num] == 'up') { pos[num] -= 2; }
+				
+				if (pos[num] == 500) { dir[num] = 'up'; }
+				else if (pos[num] == 0) { dir[num] = 'down'; }
+				
+				position = pos[num] + "px";
+				$('div#0'+num).css("top", position);
+			}
+			
+		</script>
+		<style>
+			div.bouncer {
+				height: 100px;
+				width: 100px;
+				background-color: yellow;
+				margin: 10px;
+				float: left;
+				position: relative;
+			}
+		</style>
+	</head>
+	<body>
+	<h1>Bounce those divvies up and down!</h1>
+	<h2>Your processor will go round and round</h2>
+		<div class="bouncer" id="01" onclick="bounce('01')"></div>
+		<div class="bouncer" id="02" onclick="bounce('02')"></div>
+		<div class="bouncer" id="03" onclick="bounce('03')"></div>
+		<div class="bouncer" id="04" onclick="bounce('04')"></div>
+		<div class="bouncer" id="05" onclick="bounce('05')"></div>		
+		<div class="bouncer" id="06" onclick="bounce('06')"></div>	
+	</body>
+</html>

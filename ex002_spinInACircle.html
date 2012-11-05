@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+ 	<script>
+      foo = 10;
+      
+      function move() {
+          window.setInterval(function(){left();}, 2);
+      }
+      
+      function left() {
+          var leftSpace = Math.sin(foo - 500) * 300;
+          var topSpace = Math.sin(foo - 250) * 300;
+          $('div#mover').css('margin-left', leftSpace + 'px');
+          $('div#mover').css('margin-top', topSpace + 'px');
+          $('span.my_value').text(foo);
+          foo += .01;
+      }
+	</script>
+	<title>Spin in a circle</title>
+	<style>
+		div#mover {
+			height: 25px;
+			width: 45px;
+			padding: 50px;
+			background-color: black;
+			position: relative;
+			left: 500px;
+			top: 400px;
+		}
+		span.my_value {
+			color: white;
+		}
+	</style>
+</head>
+<body>
+
+	<h1>Look at my pretty little divvy spinning in a circle</h1>
+
+<div id="mover">
+	<span class="my_value">Hello</span>
+</div>
+
+<script>
+move();
+</script>
+
+</body>
+</html>

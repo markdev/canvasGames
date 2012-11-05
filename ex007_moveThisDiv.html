@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script>
+			document.onmousemove = getMouseXY;
+			var t = "";
+			
+			function getMouseXY(e) {
+				tempX = e.pageX - 50;
+				tempY = e.pageY - 50;
+				return true;
+			}			
+			
+			function moveDiv() {
+				$('div#movable').css('left',tempX);
+				$('div#movable').css('top',tempY);
+			}
+			
+			function move() {
+				t = setInterval("moveDiv()", 1);
+			}
+			function stop() {
+				clearInterval(t);
+			}
+		</script>
+		<style>
+			div#movable {
+				height: 100px;
+				width: 100px;
+				background-color: blue;
+				position: absolute;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<h1>Move that div!</h1>
+	
+		<div id="movable" onmousedown="move()" onmouseup="stop()"></div>
+
+<script>
+
+
+</script>
+	</body>
+</html>

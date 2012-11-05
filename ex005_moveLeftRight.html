@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+ 	<script>
+		var active = 0;
+ 	
+ 		function move(dir) {
+ 			if (dir == "left" && active != 0) { active--; }
+ 			else if (dir == "right" && active != 9) { active++; }
+ 			$('div').removeClass('active');
+ 			$('div#a' + active).addClass('active');
+ 		}
+ 		
+ 		
+ 	
+ 	</script>
+	<title>Insert Title Here</title>
+	<style>
+		div.mover {
+			height: 100px;
+			width: 100px;
+			background-color: blue;
+			margin: 10px;
+			float: left;
+		}
+		div.active {
+			background-color: white;
+			border: 3px solid black;
+		}
+		div.button {
+			width: 50px;
+			height: 30px;
+			padding: 40px;
+			background-color: #ccc;
+			float: left;
+			margin: 10px;
+		}
+		div.buttonWrapper, div.wrapper {
+			margin: auto;
+			clear: both;
+		}
+		div.buttonWrapper {
+			margin-left: 455px;
+		}
+		
+	</style>
+</head>
+<body>
+<h1>Click left to move left and right to move right</h1>
+<div class="wrapper">
+	<div class="mover active" id="a0"></div>
+	<div class="mover" id="a1"></div>
+	<div class="mover" id="a2"></div>
+	<div class="mover" id="a3"></div>
+	<div class="mover" id="a4"></div>
+	<div class="mover" id="a5"></div>
+	<div class="mover" id="a6"></div>
+	<div class="mover" id="a7"></div>
+	<div class="mover" id="a8"></div>
+	<div class="mover" id="a9"></div>
+</div>
+
+<div class="buttonWrapper" >
+	<div class="button" id="left" onmousedown="move('left');">LEFT</div>
+	<div class="button" id="right" onmousedown="move('right');">RIGHT</div>
+</div>
+
+
+<script>
+
+</script>
+
+</body>
+</html>
