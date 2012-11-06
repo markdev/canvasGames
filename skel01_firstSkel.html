@@ -19,7 +19,7 @@
 
             //Declare all of your variables here
             var canvas = null;
-            var context = null;
+            var ctx = null;
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
             //var mainTimer = null;
@@ -27,12 +27,12 @@
             //main() gets called onload body
             function main() {
                 canvas = document.getElementById("canvas");
-                context  = canvas.getContext("2d");
+                ctx  = canvas.getContext("2d");
 
                 bufferCanvas = document.createElement("canvas");
                 bufferCanvasCtx = bufferCanvas.getContext("2d");
-                bufferCanvasCtx.canvas.width = context.canvas.width;
-                bufferCanvasCtx.canvas.height = context.canvas.height;
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
 
                 Draw();
 
@@ -51,7 +51,7 @@
 
             // Rendering
             function blank() {
-                bufferCanvasCtx.fillStyle = "/* your color here */";
+                bufferCanvasCtx.fillStyle = "#0BD";
                 bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
             }
 
@@ -65,15 +65,15 @@
             }
 
             function Draw() {
-                context.save();
+                ctx.save();
 
                 blank();
 
                 /* Now draw everything here */
 
                 // copy the entire rendered image from the bugger canvas to the visible one
-                context.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
-                context.restore();
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
             }
         </script>
         <style>
