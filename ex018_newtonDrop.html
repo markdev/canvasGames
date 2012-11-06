@@ -24,6 +24,7 @@
             var bufferCanvasCtx = null;
             var newtonX = null;
             var appleArray = [];
+            var gravity = 1;
 
             //main() gets called onload body
             function main() {
@@ -49,6 +50,7 @@
                 this.color = "red";
                 this.width = 20;
                 this.height = this.width;
+                this.velocity = 5;
             }
 
             // Events
@@ -79,7 +81,8 @@
 
             function Update() {
                 for (var i = 0; i < appleArray.length; i++) {
-                    appleArray[i].y += 5;
+                    appleArray[i].y += appleArray[i].velocity;
+                    appleArray[i].velocity += gravity;
                 }
             }
 
