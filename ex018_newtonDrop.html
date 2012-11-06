@@ -24,6 +24,7 @@
             var bufferCanvasCtx = null;
             var newtonX = null;
             var appleArray = [];
+            var maxApples = 10;
             var gravity = 1;
 
             //main() gets called onload body
@@ -45,7 +46,7 @@
 
             // Objects
             function Apple() {
-                this.x = newtonX;
+                this.x = newtonX + 10;
                 this.y = 10;
                 this.color = "red";
                 this.width = 20;
@@ -54,18 +55,18 @@
             }
 
             // Events
-            document.onkeydown = move;
+            document.onkeyup = move;
 
             // Actions
             function move(e) {
                 var keyCode = e.keyCode;
-                if (keyCode == 37) { newtonX -= 10; }
-                if (keyCode == 39) { newtonX += 10; }
+                if (keyCode == 37 && newtonX >= 20) { newtonX -= 10; }
+                if (keyCode == 39 && newtonX <= (canvas.width - 70)) { newtonX += 10; }
                 if (keyCode == 32) { drop(); }
             }
 
             function drop() {
-                appleArray[appleArray.length] = new Apple();
+                if (appleArray.length < maxApples) { appleArray[appleArray.length] = new Apple(); }
             }
 
             // Rendering
@@ -83,6 +84,7 @@
                 for (var i = 0; i < appleArray.length; i++) {
                     appleArray[i].y += appleArray[i].velocity;
                     appleArray[i].velocity += gravity;
+                    if (appleArray[i].y >= canvas.height) {appleArray.shift();}
                 }
             }
 
