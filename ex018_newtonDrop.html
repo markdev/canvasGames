@@ -64,8 +64,6 @@
 
             function drop() {
                 appleArray[appleArray.length] = new Apple();
-                var foo  = appleArray[appleArray.length - 1].x;
-                alert(foo);
             }
 
             // Rendering
@@ -80,7 +78,9 @@
             }
 
             function Update() {
-            /* all the state change logic goes here */
+                for (var i = 0; i < appleArray.length; i++) {
+                    appleArray[i].y += 5;
+                }
             }
 
             function Draw() {
@@ -90,6 +90,10 @@
 
                 bufferCanvasCtx.fillStyle = "green";
                 bufferCanvasCtx.fillRect(newtonX, 10, 50, 50);
+                for (var i=0; i<appleArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = "red";
+                    bufferCanvasCtx.fillRect(appleArray[i].x, appleArray[i].y, appleArray[i].width, appleArray[i].height);
+                }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 context.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
