@@ -22,7 +22,6 @@
             var ctx = null;
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
-            //var mainTimer = null;
 
             //main() gets called onload body
             function main() {
@@ -70,6 +69,7 @@
                 blank();
 
                 /* Now draw everything here */
+                /* Remember to start with bufferCanvasCtx */
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
