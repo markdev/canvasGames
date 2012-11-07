@@ -80,6 +80,8 @@
                 }
             }
 
+            function kill() { villian = null; }
+
 
             // Rendering
             function blank() {
@@ -93,7 +95,18 @@
             }
 
             function Update() {
-            /* all the state change logic goes here */
+
+                if (villian) {
+                    if ((hero.x > villian.x - hero.w) &&
+                        (hero.x < villian.x + villian.w) &&
+                        (hero.y > villian.y - hero.h) &&
+                        (hero.y < villian.y + villian.h)
+                            ) {
+                        kill();
+                    }
+                } else {
+                    villian = new badGuy();
+                }
             }
 
             function Draw() {
@@ -103,8 +116,10 @@
                 bufferCanvasCtx.fillStyle = "green";
                 bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
-                bufferCanvasCtx.fillStyle = "red";
-                bufferCanvasCtx.fillRect(villian.x, villian.y, villian.w, villian.h);
+                if (villian) {
+                    bufferCanvasCtx.fillStyle = "red";
+                    bufferCanvasCtx.fillRect(villian.x, villian.y, villian.w, villian.h);
+                }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
