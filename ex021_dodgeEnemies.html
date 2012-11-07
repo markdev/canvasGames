@@ -58,7 +58,11 @@
                 this.x = Math.random() * (canvas.width - this.w);
                 this.y = Math.random() * (canvas.height - this.h);
                 this.spdx = (Math.round(Math.random()) * 2) + 1;
+                    var xrand = Math.random() - .5;
+                    if (xrand < 0) this.spdx *= -1;
                 this.spdy = (Math.round(Math.random()) * 2) + 1;
+                    var yrand = Math.random() - .5;
+                    if (yrand < 0) this.spdy *= -1;
             }
 
             // Events
@@ -70,15 +74,19 @@
                 switch (keyCode) {
                     case 37: // left
                         hero.x -= hero.speed;
+                        if (hero.x < (0-hero.w))  hero.x = canvas.width;
                         break;
                     case 38: // up
                         hero.y -= hero.speed;
+                        if (hero.y < (0-hero.h)) hero.y = canvas.height;
                         break;
                     case 39: // right
                         hero.x += hero.speed;
+                        if (hero.x > canvas.width) hero.x = 0-hero.w;
                         break;
                     case 40: // down
                         hero.y += hero.speed;
+                        if (hero.y > canvas.height) hero.y = 0-hero.h;
                         break;
                 }
             }
