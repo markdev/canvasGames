@@ -23,6 +23,7 @@
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
             var hero = null;
+            var kills = 0;
 
             //main() gets called onload body
             function main() {
@@ -80,7 +81,7 @@
                 }
             }
 
-            function kill() { villian = null; }
+            function kill() { villian = null; kills++; }
 
 
             // Rendering
@@ -120,6 +121,11 @@
                     bufferCanvasCtx.fillStyle = "red";
                     bufferCanvasCtx.fillRect(villian.x, villian.y, villian.w, villian.h);
                 }
+
+                bufferCanvasCtx.fillStyle = "black";
+                bufferCanvasCtx.font = "30pt Arial";
+                var killString = "Kills: " + kills;
+                bufferCanvasCtx.fillText(killString, (canvas.width/2)-100, 50);
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
