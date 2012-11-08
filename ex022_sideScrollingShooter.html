@@ -90,6 +90,18 @@
                 villianArray[villianArray.length] = new badGuy();
             }
 
+            function killEnemy(badGuyPos, laserPos) {
+                for(var i = badGuyPos; i < (villianArray.length - 1); i++) {
+                    villianArray[i] = villianArray[i + 1];
+                }
+                villianArray.pop();
+
+                for(var i = laserPos; i < (laserArray.length - 1); i++) {
+                    laserArray[i] = laserArray[i + 1];
+                }
+                laserArray.pop();
+            }
+
 
             // Rendering
             function blank() {
@@ -103,16 +115,29 @@
             }
 
             function Update() {
+                // update laser positions
                 for(var i = 0; i<laserArray.length; i++) {
                     laserArray[i].x += laserArray[i].speed;
                     if (laserArray[i].x > canvas.width) {
                         laserArray.shift();
                     }
                 }
+                //update villian positions
                 for (var i = 0; i<villianArray.length; i++) {
                     villianArray[i].x -= villianArray[i].speed;
                     if (villianArray[i].x < -villianArray[i].w)
                         villianArray.shift();
+                }
+                //perform kill checks with each laser
+                for(var i = 0; i<laserArray.length; i++) {
+                    for (var j = 0; j<villianArray.length; j++) {
+                        if (
+                                ((laserArray[i].x + laserArray[i].w) > villianArray[j].x) &&
+                                (laserArray[i].x < (villianArray[j].x + villianArray[j].w)) &&
+                                (laserArray[i].y > villianArray[j].y) &&
+                                (laserArray[i].y < villianArray[j].y + villianArray[j].h)
+                            ) { killEnemy(j, i); }
+                    }
                 }
             }
 
