@@ -30,6 +30,7 @@
             var mode = "opening";
             var startText = "Press any key to start";
             var openingTimer = null;
+            var animateTimer = null;
 
             //main() gets called onload body
             function main() {
@@ -52,7 +53,13 @@
 
                     Draw();
 
-                    setInterval(animate, 30);
+                    animateTimer = setInterval(animate, 30);
+                }
+
+                if (mode == "end") {
+                    villainTimer = window.clearInterval(villainTimer);
+                    animateTimer = window.clearInterval(animateTimer);
+                    endTimer = setInterval(drawEnding, 300);
                 }
             }
 
@@ -173,7 +180,10 @@
                     }
                 }
 
-                if (hero.health <= 0) {alert("you lose");}
+                if (hero.health <= 0) {
+                    mode = "end";
+                    main();
+                }
             }
 
             function Draw() {
@@ -233,6 +243,19 @@
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
                 ctx.restore();
+            }
+
+            function drawEnding() {
+                  ctx.save();
+                  blank();
+
+                  bufferCanvasCtx.fillStyle = "green";
+                  bufferCanvasCtx.font = "20pt Arial";
+                  var endString = "Game Over.  You got " + kills + " kills.";
+                  bufferCanvasCtx.fillText(endString, canvas.width/2 - 180, canvas.height/2 - 30);
+
+                  ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                  ctx.restore();
             }
         </script>
         <style>
