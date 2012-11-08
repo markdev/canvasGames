@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>This is my first EAR attempt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+
+            //Declare all of your variables here
+            var canvas = null;
+            var ctx = null;
+            var bufferCanvas = null;
+            var bufferCanvasCtx = null;
+            var hero = null;
+            var laserArray = [];
+            var villianTimer = null;
+            var villianArray = [];
+
+            //main() gets called onload body
+            function main() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                bufferCanvas = document.createElement("canvas");
+                bufferCanvasCtx = bufferCanvas.getContext("2d");
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
+
+                hero = new goodGuy();
+
+                villianTimer = setInterval(badGuyGen, 500);
+
+                Draw();
+
+                setInterval(animate, 30);
+            }
+
+            // Objects
+                function goodGuy() {
+                    this.x = 0;
+                    this.y = canvas.height/2;
+                    this.w = 50;
+                    this.h = this.w;
+                    this.speed;
+                }
+
+                function badGuy() {
+                    this.x = canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.w = 100;
+                    this.h = this.w;
+                    this.color = "red";
+                    this.speed = 15;
+                }
+
+                function laser() {
+                    this.x = hero.w;
+                    this.y = hero.y + (hero.h/2);
+                    this.w = 20;
+                    this.h = 5;
+                    this.color = "yellow";
+                    this.speed = 20;
+                }
+
+            // Events
+            document.onmousemove = moveHero;
+            document.onmousedown = fire;
+
+            // Actions
+            function moveHero(e) {
+                hero.y = e.pageY;
+            }
+
+            function fire() {
+                laserArray[laserArray.length] = new laser();
+            }
+
+            function badGuyGen() {
+                villianArray[villianArray.length] = new badGuy();
+            }
+
+
+            // Rendering
+            function blank() {
+                bufferCanvasCtx.fillStyle = "#0BD";
+                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+            }
+
+            function animate() {
+                Update();
+                Draw();
+            }
+
+            function Update() {
+                for(var i = 0; i<laserArray.length; i++) {
+                    laserArray[i].x += laserArray[i].speed;
+                    if (laserArray[i].x > canvas.width) {
+                        laserArray.shift();
+                    }
+                }
+                for (var i = 0; i<villianArray.length; i++) {
+                    villianArray[i].x -= villianArray[i].speed;
+                    if (villianArray[i].x < -villianArray[i].w)
+                        villianArray.shift();
+                }
+            }
+
+            function Draw() {
+                ctx.save();
+
+                blank();
+
+                /* Now draw everything here */
+                //draw the hero
+                bufferCanvasCtx.fillStyle = "green";
+                bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
+
+                //draw the lasers
+                for(var i = 0; i < laserArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = laserArray[i].color;
+                    bufferCanvasCtx.fillRect(laserArray[i].x, laserArray[i].y, laserArray[i].w, laserArray[i].h);
+                }
+
+                //draw villians
+                for(var i = 0; i < villianArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = villianArray[i].color;
+                    bufferCanvasCtx.fillRect(villianArray[i].x, villianArray[i].y, villianArray[i].w, villianArray[i].h);
+                }
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+        </script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+            }
+        </style>
+    </head>
+    <body onload="main();">
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
