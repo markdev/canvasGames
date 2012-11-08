@@ -27,6 +27,9 @@
             var villainTimer = null;
             var villainArray = [];
             var kills = 0;
+            var mode = "opening";
+            var startText = "Press any key to start";
+            var openingTimer = null;
 
             //main() gets called onload body
             function main() {
@@ -38,13 +41,19 @@
                 bufferCanvasCtx.canvas.width = ctx.canvas.width;
                 bufferCanvasCtx.canvas.height = ctx.canvas.height;
 
-                hero = new goodGuy();
+                if (mode == "opening") {
+                    openingTimer = setInterval(drawOpening, 300);
+                }
 
-                villainTimer = setInterval(badGuyGen, 500);
+                if (mode == "game") {
+                    hero = new goodGuy();
 
-                Draw();
+                    villainTimer = setInterval(badGuyGen, 500);
 
-                setInterval(animate, 30);
+                    Draw();
+
+                    setInterval(animate, 30);
+                }
             }
 
             // Objects
@@ -79,8 +88,17 @@
             // Events
             document.onmousemove = moveHero;
             document.onmousedown = fire;
+            document.onkeydown = keypress;
 
             // Actions
+            function keypress() {
+                if (mode = "opening") {
+                    clearInterval(openingTimer);
+                    mode = "game"
+                    main();
+                }
+            }
+
             function moveHero(e) {
                 hero.y = e.pageY;
             }
@@ -150,7 +168,9 @@
                         (hero.x < (villainArray[i].x + villainArray[i].w)) &&
                         ((hero.y + hero.h) > villainArray[i].y ) &&
                         (hero.y < (villainArray[i].y + villainArray[i].h))
-                            ) { hero.health -= Math.round((villainArray[i].w / 50)); }
+                            ) {
+                        hero.health -= 1;
+                    }
                 }
 
                 if (hero.health <= 0) {alert("you lose");}
@@ -183,9 +203,32 @@
                 var healthString = "Health: " + hero.health;
                 bufferCanvasCtx.fillStyle = "black";
                 bufferCanvasCtx.font = "20pt Arial";
-                bufferCanvasCtx.fillText(killString, 200, 40);
-                bufferCanvasCtx.fillText(healthString, 350, 40);
+                bufferCanvasCtx.fillText(killString, (canvas.width/2) - 130, 40);
+                bufferCanvasCtx.fillText(healthString, (canvas.width/2), 40);
 
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+
+            function drawOpening() {
+                ctx.save();
+
+                blank();
+
+                /* Now draw everything here */
+                //draw the hero
+                bufferCanvasCtx.fillStyle = "green";
+                bufferCanvasCtx.font = "50pt Arial";
+                bufferCanvasCtx.fillText("Div Blaster", canvas.width/2 - 175, canvas.height/2 - 70);
+                bufferCanvasCtx.font = "20pt Arial";
+                bufferCanvasCtx.fillText("by M.A.R.K.", canvas.width/2 - 90, canvas.height/2 - 25);
+
+
+                bufferCanvasCtx.fillText(startText, canvas.width/2 - 150, canvas.height/2 + 30);
+                if(startText == "Press any key to start") {startText = "";}
+                else {startText = "Press any key to start"};
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
