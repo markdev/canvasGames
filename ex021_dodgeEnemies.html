@@ -91,6 +91,9 @@
                 }
             }
 
+            function kill() {
+                alert("dead");
+            }
 
             // Rendering
             function blank() {
@@ -106,13 +109,30 @@
             function Update() {
                 if (villianArray.length < maxVillians)
                     villianArray[villianArray.length] = new badGuy();
+
+                // render position change for villians
                 for (var i = 0; i < villianArray.length; i++) {
                     villianArray[i].x += villianArray[i].spdx;
                     if (villianArray[i].x > canvas.width)
                         villianArray[i].x = -villianArray[i].w;
+                    if (villianArray[i].x < 0 - villianArray[i].w)
+                        villianArray[i].x = canvas.width;
                     villianArray[i].y += villianArray[i].spdy;
                     if (villianArray[i].y > canvas.height)
                         villianArray[i].y = -villianArray[i].h;
+                    if (villianArray[i].y < 0 - villianArray[i].h)
+                        villianArray[i].y = canvas.height;
+                }
+
+                // detect death
+                for (var i = 0; i < villianArray.length; i++) {
+                    if ((hero.x > villianArray[i].x - hero.w) &&
+                            (hero.x < villianArray[i].x + villianArray[i].w) &&
+                            (hero.y > villianArray[i].y - hero.h) &&
+                            (hero.y < villianArray[i].y + villianArray[i].h)
+                            ) {
+                        kill();
+                    }
                 }
             }
 
