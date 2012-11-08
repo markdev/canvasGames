@@ -139,6 +139,15 @@
                             ) { killEnemy(j, i); }
                     }
                 }
+                //perform hero death check
+                for(var i = 0; i<villianArray.length; i++){
+                    if(
+                        ((hero.x + hero.w) > villianArray[i].x) &&
+                        (hero.x < (villianArray[i].x + villianArray[i].w)) &&
+                        ((hero.y + hero.h) > villianArray[i].y ) &&
+                        (hero.y < (villianArray[i].y + villianArray[i].h))
+                            ) { alert("dead"); }
+                }
             }
 
             function Draw() {
