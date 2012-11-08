@@ -24,8 +24,9 @@
             var bufferCanvasCtx = null;
             var hero = null;
             var laserArray = [];
-            var villianTimer = null;
-            var villianArray = [];
+            var villainTimer = null;
+            var villainArray = [];
+            var kills = 0;
 
             //main() gets called onload body
             function main() {
@@ -39,7 +40,7 @@
 
                 hero = new goodGuy();
 
-                villianTimer = setInterval(badGuyGen, 500);
+                villainTimer = setInterval(badGuyGen, 500);
 
                 Draw();
 
@@ -53,15 +54,17 @@
                     this.w = 50;
                     this.h = this.w;
                     this.speed;
+                    this.health = 100;
                 }
 
                 function badGuy() {
                     this.x = canvas.width;
                     this.y = Math.random() * canvas.height;
-                    this.w = 100;
+                    this.w = (Math.random() * 100) + 20;
                     this.h = this.w;
                     this.color = "red";
                     this.speed = 15;
+                    // this.speed = Math.random() * 20;
                 }
 
                 function laser() {
@@ -87,19 +90,20 @@
             }
 
             function badGuyGen() {
-                villianArray[villianArray.length] = new badGuy();
+                villainArray[villainArray.length] = new badGuy();
             }
 
             function killEnemy(badGuyPos, laserPos) {
-                for(var i = badGuyPos; i < (villianArray.length - 1); i++) {
-                    villianArray[i] = villianArray[i + 1];
+                for(var i = badGuyPos; i < (villainArray.length - 1); i++) {
+                    villainArray[i] = villainArray[i + 1];
                 }
-                villianArray.pop();
+                villainArray.pop();
 
                 for(var i = laserPos; i < (laserArray.length - 1); i++) {
                     laserArray[i] = laserArray[i + 1];
                 }
                 laserArray.pop();
+                kills++;
             }
 
 
@@ -122,32 +126,34 @@
                         laserArray.shift();
                     }
                 }
-                //update villian positions
-                for (var i = 0; i<villianArray.length; i++) {
-                    villianArray[i].x -= villianArray[i].speed;
-                    if (villianArray[i].x < -villianArray[i].w)
-                        villianArray.shift();
+                //update villain positions
+                for (var i = 0; i<villainArray.length; i++) {
+                    villainArray[i].x -= villainArray[i].speed;
+                    if (villainArray[i].x < -villainArray[i].w)
+                        villainArray.shift();
                 }
                 //perform kill checks with each laser
                 for(var i = 0; i<laserArray.length; i++) {
-                    for (var j = 0; j<villianArray.length; j++) {
+                    for (var j = 0; j<villainArray.length; j++) {
                         if (
-                                ((laserArray[i].x + laserArray[i].w) > villianArray[j].x) &&
-                                (laserArray[i].x < (villianArray[j].x + villianArray[j].w)) &&
-                                (laserArray[i].y > villianArray[j].y) &&
-                                (laserArray[i].y < villianArray[j].y + villianArray[j].h)
+                                ((laserArray[i].x + laserArray[i].w) > villainArray[j].x) &&
+                                (laserArray[i].x < (villainArray[j].x + villainArray[j].w)) &&
+                                (laserArray[i].y > villainArray[j].y) &&
+                                (laserArray[i].y < villainArray[j].y + villainArray[j].h)
                             ) { killEnemy(j, i); }
                     }
                 }
                 //perform hero death check
-                for(var i = 0; i<villianArray.length; i++){
+                for(var i = 0; i<villainArray.length; i++){
                     if(
-                        ((hero.x + hero.w) > villianArray[i].x) &&
-                        (hero.x < (villianArray[i].x + villianArray[i].w)) &&
-                        ((hero.y + hero.h) > villianArray[i].y ) &&
-                        (hero.y < (villianArray[i].y + villianArray[i].h))
-                            ) { alert("dead"); }
+                        ((hero.x + hero.w) > villainArray[i].x) &&
+                        (hero.x < (villainArray[i].x + villainArray[i].w)) &&
+                        ((hero.y + hero.h) > villainArray[i].y ) &&
+                        (hero.y < (villainArray[i].y + villainArray[i].h))
+                            ) { hero.health -= Math.round((villainArray[i].w / 50)); }
                 }
+
+                if (hero.health <= 0) {alert("you lose");}
             }
 
             function Draw() {
@@ -166,11 +172,20 @@
                     bufferCanvasCtx.fillRect(laserArray[i].x, laserArray[i].y, laserArray[i].w, laserArray[i].h);
                 }
 
-                //draw villians
-                for(var i = 0; i < villianArray.length; i++) {
-                    bufferCanvasCtx.fillStyle = villianArray[i].color;
-                    bufferCanvasCtx.fillRect(villianArray[i].x, villianArray[i].y, villianArray[i].w, villianArray[i].h);
+                //draw villains
+                for(var i = 0; i < villainArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = villainArray[i].color;
+                    bufferCanvasCtx.fillRect(villainArray[i].x, villainArray[i].y, villainArray[i].w, villainArray[i].h);
                 }
+
+                //draw text
+                var killString = "Kills: " + kills;
+                var healthString = "Health: " + hero.health;
+                bufferCanvasCtx.fillStyle = "black";
+                bufferCanvasCtx.font = "20pt Arial";
+                bufferCanvasCtx.fillText(killString, 200, 40);
+                bufferCanvasCtx.fillText(healthString, 350, 40);
+
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
@@ -186,7 +201,7 @@
     <body onload="main();">
 
         <!-- Add your site or application content here -->
-        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+        <canvas id="canvas" height="700" width="1200">Joo cannot see me!</canvas>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
