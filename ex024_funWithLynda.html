@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>This is my first EAR attempt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+
+            //Declare all of your variables here
+            var canvas = null;
+            var ctx = null;
+            var bufferCanvas = null;
+            var bufferCanvasCtx = null;
+            var mouseX = null;
+            var mouseY = null;
+            var panel = null;
+
+            //main() gets called onload body
+            function main() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                bufferCanvas = document.createElement("canvas");
+                bufferCanvasCtx = bufferCanvas.getContext("2d");
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
+
+                panel = new glassPane();
+
+                Draw();
+
+                setInterval(animate, 30);
+            }
+
+            // Objects
+            function glassPane() {
+                this.x = 0;
+                this.y = 0;
+                this.w = 300;
+                this.h = 300;
+                this.color = "rgba(0, 255, 255, .5)";
+            }
+
+            // Events
+            document.onmousemove = move;
+
+            // Actions
+            function move(e) {
+                panel.x = e.pageX;
+                panel.y = e.pageY;
+            }
+
+
+            // Rendering
+            function blank() {
+                bufferCanvasCtx.fillStyle = "#0BD";
+                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+            }
+
+            function animate() {
+                Update();
+                Draw();
+            }
+
+            function Update() {
+            /* all the state change logic goes here */
+            }
+
+            function Draw() {
+                ctx.save();
+
+                blank();
+
+                bufferCanvasCtx.fillStyle = "red";
+                bufferCanvasCtx.fillRect(200,200,200,200);
+
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.fillRect(450,100,100,75);
+
+                bufferCanvasCtx.fillStyle = panel.color;
+                bufferCanvasCtx.fillRect(panel.x, panel.y, panel.w, panel.h);
+
+                bufferCanvasCtx.clearRect(225,225,50,50);
+
+                bufferCanvasCtx.beginPath();
+                bufferCanvasCtx.moveTo(100,100);
+                bufferCanvasCtx.lineTo(panel.x,panel.y);
+                bufferCanvasCtx.stroke();
+
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+        </script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+            }
+        </style>
+    </head>
+    <body onload="main();">
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
