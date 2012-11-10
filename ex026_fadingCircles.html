@@ -22,8 +22,9 @@
             var ctx = null;
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
-            var myCircle = null;
-            
+            var circleArray = [];
+            var maxCircles = 10;
+
 
             //main() gets called onload body
             function main() {
@@ -34,8 +35,6 @@
                 bufferCanvasCtx = bufferCanvas.getContext("2d");
                 bufferCanvasCtx.canvas.width = ctx.canvas.width;
                 bufferCanvasCtx.canvas.height = ctx.canvas.height;
-
-                myCircle = new circle();
 
                 Draw();
 
@@ -49,7 +48,7 @@
                 this.y = 0;
                 this.start = 0;
                 this.stop = 2 * Math.PI;
-                this.color = "rgba(255,255,0,1)";
+                this.alpha = 1;
             }
 
             // Events
@@ -57,8 +56,13 @@
 
             // Actions
             function move(e) {
-               myCircle.x = e.pageX;
-               myCircle.y = e.pageY;
+                circleArray[circleArray.length] = new circle();
+                circleArray[circleArray.length - 1].x = e.pageX;
+                circleArray[circleArray.length - 1].y = e.pageY;
+                circleArray[circleArray.length - 1].color = "yellow";
+                if (circleArray.length > 10) {
+                   circleArray.shift();
+                }
             }
 
 
@@ -83,10 +87,12 @@
                 blank();
 
                 /* Now draw everything here */
-                bufferCanvasCtx.beginPath();
-                bufferCanvasCtx.fillStyle = myCircle.color;
-                bufferCanvasCtx.arc(myCircle.x, myCircle.y, myCircle.r, myCircle.start, myCircle.stop);
-                bufferCanvasCtx.fill();
+                for (var i = 0; i < circleArray.length; i++) {
+                    bufferCanvasCtx.beginPath();
+                    bufferCanvasCtx.fillStyle = "rgba(255, 255, 0, " + i/10 + ")";
+                    bufferCanvasCtx.arc(circleArray[i].x, circleArray[i].y, circleArray[i].r, circleArray[i].start, circleArray[i].stop);
+                    bufferCanvasCtx.fill();
+                }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
