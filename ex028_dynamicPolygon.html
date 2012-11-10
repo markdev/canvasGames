@@ -23,7 +23,7 @@
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
             var polygonArray = [];
-            var maxSides = 4;
+            var maxSides = 3;
 
             //main() gets called onload body
             function main() {
@@ -52,9 +52,14 @@
 
             // Actions
             function place(e) {
-                polygonArray[polygonArray.length] = new Point();
-                polygonArray[polygonArray.length - 1].x = e.pageX;
-                polygonArray[polygonArray.length - 1].y = e.pageY;
+                if(e.pageX < canvas.width && e.pageY < canvas.height) {
+                    polygonArray[polygonArray.length] = new Point();
+                    polygonArray[polygonArray.length - 1].x = e.pageX;
+                    polygonArray[polygonArray.length - 1].y = e.pageY;
+                }
+            }
+            function changeSides() {
+                maxSides = $("input#sides").val();
             }
 
 
@@ -96,7 +101,7 @@
                     bufferCanvasCtx.moveTo(polygonArray[0].x, polygonArray[0].y);
                     for (var i=1; i<polygonArray.length; i++) {
                         if(polygonArray[i]) { bufferCanvasCtx.lineTo(polygonArray[i].x, polygonArray[i].y); }
-                        if(i == maxSides) {bufferCanvasCtx.closePath();}
+                        if(i == maxSides - 1) {bufferCanvasCtx.closePath();}
                     }
                     bufferCanvasCtx.stroke();
                 }
@@ -115,7 +120,8 @@
     <body onload="main();">
 
         <!-- Add your site or application content here -->
-        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+        <p><canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas></p>
+        <input type="text" id="sides" size="3" onchange="changeSides()" value="3" />
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
