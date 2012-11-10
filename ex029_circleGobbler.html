@@ -25,6 +25,8 @@
             var dragArray = [];
             var myMouth = null;
             var dist = 0;
+            var mode = "deselected";
+            var devour = 0;
 
             //main() gets called onload body
             function main() {
@@ -51,6 +53,7 @@
                 this.y = Math.random() * canvas.height;
                 this.radius = 25;
                 this.color = "yellow";
+                this.alpha = 1;
             }
 
             function mouth() {
@@ -62,6 +65,8 @@
 
             // Events
             document.onmousedown = click;
+            document.onmousemove = move;
+            document.onmouseup = release;
 
             // Actions
             function newDraggable() {
@@ -74,21 +79,44 @@
                     (e.pageY > dragArray[0].y - dragArray[0].radius) &&
                     (e.pageY < dragArray[0].y + dragArray[0].radius))
                 {
-                    document.onmousemove = move;
+                    mode = "selected";
                 }
             }
+
             function move(e) {
-                dragArray[0].x = e.pageX;
-                dragArray[0].y = e.pageY;
+                if (mode == "selected") {
+                    dragArray[0].x = e.pageX;
+                    dragArray[0].y = e.pageY;
 
-                dist = Math.sqrt(
-                        Math.abs(myMouth.x - dragArray[0].x)  *  Math.abs(myMouth.x - dragArray[0].x) +
-                        Math.abs(myMouth.y - dragArray[0].y)  *  Math.abs(myMouth.y - dragArray[0].y)
-                );
+                    dist = Math.sqrt(
+                            Math.abs(myMouth.x - dragArray[0].x)  *  Math.abs(myMouth.x - dragArray[0].x) +
+                            Math.abs(myMouth.y - dragArray[0].y)  *  Math.abs(myMouth.y - dragArray[0].y)
+                    );
 
-                myMouth.radius = 100 - dist/10;
+                    var minrad = 10;
 
-                $("input#in").val(dist);
+                    if (dist < 400) {
+                        myMouth.radius = minrad + ((400 - dist) * .06);
+                    } else {
+                        myMouth.radius = minrad;
+                    }
+
+                    if ((dragArray[0].x > (myMouth.x - 7)) &&
+                        (dragArray[0].x < (myMouth.x + 7)) &&
+                        (dragArray[0].y > (myMouth.y - 7)) &&
+                        (dragArray[0].y < (myMouth.y + 7))
+                            )
+                    {
+                        mode = "deselected";
+                        devour = 1;
+                    }
+
+                    $("input#in").val(dist);
+                }
+            }
+
+            function release(e) {
+               mode = "deselected";
             }
 
 
@@ -104,7 +132,12 @@
             }
 
             function Update() {
-            /* all the state change logic goes here */
+                if (devour == 1) { dragArray[0].alpha -= .01; }
+                if (dragArray[0].alpha <= 0) {
+                    dragArray.shift();
+                    devour = 0;
+                    dragArray[dragArray.length] = new draggable();
+                }
             }
 
             function Draw() {
@@ -120,7 +153,7 @@
                 bufferCanvasCtx.fill();
 
                 //now render the draggable
-                bufferCanvasCtx.fillStyle = dragArray[0].color;
+                bufferCanvasCtx.fillStyle = "rgba(255, 255, 0, " + dragArray[0].alpha + ")";
                 bufferCanvasCtx.beginPath();
                 bufferCanvasCtx.arc(dragArray[0].x, dragArray[0].y, dragArray[0].radius, 0, 2 * Math.PI);
                 bufferCanvasCtx.fill();
