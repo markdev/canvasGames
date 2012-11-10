@@ -89,19 +89,6 @@
                     dragArray[0].x = e.pageX;
                     dragArray[0].y = e.pageY;
 
-                    dist = Math.sqrt(
-                            Math.abs(myMouth.x - dragArray[0].x)  *  Math.abs(myMouth.x - dragArray[0].x) +
-                            Math.abs(myMouth.y - dragArray[0].y)  *  Math.abs(myMouth.y - dragArray[0].y)
-                    );
-
-                    var minrad = 10;
-
-                    if (dist < 400) {
-                        myMouth.radius = minrad + ((400 - dist) * .06);
-                    } else {
-                        myMouth.radius = minrad;
-                    }
-
                     if ((dragArray[0].x > (myMouth.x - 7)) &&
                         (dragArray[0].x < (myMouth.x + 7)) &&
                         (dragArray[0].y > (myMouth.y - 7)) &&
@@ -113,6 +100,21 @@
                     }
 
                     $("input#in").val(dist);
+                }
+            }
+
+            function getMouthRad() {
+                dist = Math.sqrt(
+                        Math.abs(myMouth.x - dragArray[0].x)  *  Math.abs(myMouth.x - dragArray[0].x) +
+                                Math.abs(myMouth.y - dragArray[0].y)  *  Math.abs(myMouth.y - dragArray[0].y)
+                );
+
+                var minrad = 10;
+
+                if (dist < 400) {
+                    myMouth.radius = minrad + ((400 - dist) * .06);
+                } else {
+                    myMouth.radius = minrad;
                 }
             }
 
@@ -133,6 +135,7 @@
             }
 
             function Update() {
+                getMouthRad();
                 if (gobble == 1) { dragArray[0].alpha -= .01; }
                 if (dragArray[0].alpha <= 0) {
                     dragArray.shift();
