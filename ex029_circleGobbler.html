@@ -23,6 +23,8 @@
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
             var dragArray = [];
+            var myMouth = null;
+            var dist = 0;
 
             //main() gets called onload body
             function main() {
@@ -36,6 +38,8 @@
 
                 newDraggable();
 
+                myMouth = new mouth();
+
                 Draw();
 
                 setInterval(animate, 30);
@@ -47,6 +51,13 @@
                 this.y = Math.random() * canvas.height;
                 this.radius = 25;
                 this.color = "yellow";
+            }
+
+            function mouth() {
+                this.x = canvas.width/2;
+                this.y = canvas.height/2;
+                this.radius = 10;
+                this.color = "red";
             }
 
             // Events
@@ -69,6 +80,15 @@
             function move(e) {
                 dragArray[0].x = e.pageX;
                 dragArray[0].y = e.pageY;
+
+                dist = Math.sqrt(
+                        Math.abs(myMouth.x - dragArray[0].x)  *  Math.abs(myMouth.x - dragArray[0].x) +
+                        Math.abs(myMouth.y - dragArray[0].y)  *  Math.abs(myMouth.y - dragArray[0].y)
+                );
+
+                myMouth.radius = 100 - dist/10;
+
+                $("input#in").val(dist);
             }
 
 
@@ -93,6 +113,13 @@
                 blank();
 
                 /* Now draw everything here */
+                //render the mouth
+                bufferCanvasCtx.fillStyle = myMouth.color;
+                bufferCanvasCtx.beginPath();
+                bufferCanvasCtx.arc(myMouth.x, myMouth.y, myMouth.radius, 0, 2 * Math.PI);
+                bufferCanvasCtx.fill();
+
+                //now render the draggable
                 bufferCanvasCtx.fillStyle = dragArray[0].color;
                 bufferCanvasCtx.beginPath();
                 bufferCanvasCtx.arc(dragArray[0].x, dragArray[0].y, dragArray[0].radius, 0, 2 * Math.PI);
@@ -112,7 +139,8 @@
     <body onload="main();">
 
         <!-- Add your site or application content here -->
-        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+        <p><canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas></p>
+        <input id="in" type="text" size="3" />
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
