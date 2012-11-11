@@ -45,8 +45,10 @@
 
             // Objects
             function eyeball(x) {
-                this.x = x;
-                this.y = 300;
+                this.origX = x;
+                this.origY = 300;
+                this.x = this.origX;
+                this.y = this.origY;
                 this.radius = 100;
                 this.colorInner = "#FFF";
                 this.colorOuter = "#DDD";
@@ -59,10 +61,25 @@
             }
 
             // Events
-            /* There are no events for this exercise */
+            document.onmousemove = move;
 
             // Actions
-            /* These are actual stuff that happens in the code */
+            function move(e) {
+                //render the eyeballs
+                leftEye.x = leftEye.origX + (e.pageX - leftEye.origX)/40;
+                leftEye.y = leftEye.origY + (e.pageY - leftEye.origY)/40;
+                rightEye.x = rightEye.origX + (e.pageX - rightEye.origX)/40;
+                rightEye.y = rightEye.origY + (e.pageY - rightEye.origY)/40;
+                /*leftEye.irisy = leftEye.y + (e.pageY - leftEye.y)/10;
+                rightEye.irisx = rightEye.x + (e.pageX - rightEye.x)/10;
+                rightEye.irisy = rightEye.y + (e.pageY - rightEye.y)/10;*/
+
+                //render the irises
+                leftEye.irisx = leftEye.x + (e.pageX - leftEye.x)/10;
+                leftEye.irisy = leftEye.y + (e.pageY - leftEye.y)/10;
+                rightEye.irisx = rightEye.x + (e.pageX - rightEye.x)/10;
+                rightEye.irisy = rightEye.y + (e.pageY - rightEye.y)/10;
+            }
 
 
             // Rendering
