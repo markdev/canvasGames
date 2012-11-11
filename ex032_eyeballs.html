@@ -24,6 +24,11 @@
             var bufferCanvasCtx = null;
             var leftEye = null;
             var rightEye = null;
+            var degLidLeft = 270;
+            var degLidRight = 270;
+            var blinking = 0;
+            var dir = "down";
+
 
             //main() gets called onload body
             function main() {
@@ -37,6 +42,8 @@
 
                 leftEye = new eyeball(200);
                 rightEye = new eyeball(450);
+
+                setInterval(blink, 5000);
 
                 Draw();
 
@@ -58,6 +65,8 @@
                 this.irisColor = "#08D";
                 this.pupilRadius = 24;
                 this.pupilColor = "#222";
+                this.eyelidInner = "#FFD683";
+                this.eyelidOuter = "#E6BC69";
             }
 
             // Events
@@ -65,26 +74,26 @@
 
             // Actions
             function move(e) {
-                //render the eyeballs
+                //move the eyeballs
                 leftEye.x = leftEye.origX + (e.pageX - leftEye.origX)/40;
                 leftEye.y = leftEye.origY + (e.pageY - leftEye.origY)/40;
                 rightEye.x = rightEye.origX + (e.pageX - rightEye.origX)/40;
                 rightEye.y = rightEye.origY + (e.pageY - rightEye.origY)/40;
-                /*leftEye.irisy = leftEye.y + (e.pageY - leftEye.y)/10;
-                rightEye.irisx = rightEye.x + (e.pageX - rightEye.x)/10;
-                rightEye.irisy = rightEye.y + (e.pageY - rightEye.y)/10;*/
 
-                //render the irises
+                //move the irises
                 leftEye.irisx = leftEye.x + (e.pageX - leftEye.x)/10;
                 leftEye.irisy = leftEye.y + (e.pageY - leftEye.y)/10;
                 rightEye.irisx = rightEye.x + (e.pageX - rightEye.x)/10;
                 rightEye.irisy = rightEye.y + (e.pageY - rightEye.y)/10;
             }
 
+            function blink() {
+                blinking = 1;
+            }
 
             // Rendering
             function blank() {
-                bufferCanvasCtx.fillStyle = "#0BD";
+                bufferCanvasCtx.fillStyle = "#D6AC59";
                 bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
             }
 
@@ -94,7 +103,23 @@
             }
 
             function Update() {
-            /* all the state change logic goes here */
+                var blinkSpeed = 12;
+                if(blinking == 1) {
+                    if(dir == "down") {
+                        degLidLeft -= blinkSpeed;
+                        degLidRight += blinkSpeed;
+                    } else if (dir == "up") {
+                        degLidLeft += blinkSpeed;
+                        degLidRight -= blinkSpeed;
+                    }
+                    if(degLidLeft <= 90 && dir == "down") {
+                        dir = "up";
+                    }
+                    if(degLidLeft >= 270 && dir == "up") {
+                        dir = "down";
+                        blinking = 0;
+                    }
+                }
             }
 
             function Draw() {
@@ -143,6 +168,26 @@
                 bufferCanvasCtx.arc(rightEye.irisx, rightEye.irisy, rightEye.pupilRadius, 0, 2 * Math.PI);
                 bufferCanvasCtx.fill();
 
+
+                // render the eyelids
+                bufferCanvasCtx.beginPath();
+                var grd = bufferCanvasCtx.createRadialGradient(leftEye.x, leftEye.y, 45, leftEye.x, leftEye.y, leftEye.radius);
+                grd.addColorStop(0, leftEye.eyelidInner);
+                grd.addColorStop(1, leftEye.eyelidOuter);
+                bufferCanvasCtx.fillStyle = grd;
+                bufferCanvasCtx.arc(leftEye.x, leftEye.y, leftEye.radius, (degLidLeft * (Math.PI / 180)), (degLidRight * (Math.PI / 180)));
+                bufferCanvasCtx.fill();
+                // right
+                bufferCanvasCtx.beginPath();
+                var grd = bufferCanvasCtx.createRadialGradient(rightEye.x, rightEye.y, 45, rightEye.x, rightEye.y, rightEye.radius);
+                grd.addColorStop(0, rightEye.eyelidInner);
+                grd.addColorStop(1, rightEye.eyelidOuter);
+                bufferCanvasCtx.fillStyle = grd;
+                bufferCanvasCtx.arc(rightEye.x, rightEye.y, rightEye.radius, (degLidLeft * (Math.PI / 180)), (degLidRight * (Math.PI / 180)));
+                bufferCanvasCtx.fill();
+
+
+
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
                 ctx.restore();
@@ -150,7 +195,7 @@
         </script>
         <style>
             canvas#canvas {
-                background-color: #0BD;
+                background-color: #E6BC69;
             }
         </style>
     </head>
