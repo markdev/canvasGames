@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>This is my first EAR attempt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+
+            //Declare all of your variables here
+            var canvas = null;
+            var ctx = null;
+            var bufferCanvas = null;
+            var bufferCanvasCtx = null;
+            var mouseY = null;
+            var bubbleArray = [];
+
+            //main() gets called onload body
+            function main() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                bufferCanvas = document.createElement("canvas");
+                bufferCanvasCtx = bufferCanvas.getContext("2d");
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
+
+                setInterval(addBubble, 400);
+
+                Draw();
+
+                setInterval(animate, 30);
+            }
+
+            // Objects
+            function bubble() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.speed = Math.round(1 + (Math.random() * 5));
+                this.radius = (Math.random() * 15) + 5;
+
+            }
+
+            // Events
+            document.onmousemove = move;
+
+            // Actions
+            function move(e) {
+                mouseY = e.pageY;
+                var sin = Math.sin(mouseY/10);
+                $("input#sin").val(sin);
+            }
+
+            function addBubble() {
+                bubbleArray[bubbleArray.length] = new bubble();
+            }
+
+
+            // Rendering
+            function blank() {
+                var grd = bufferCanvasCtx.createLinearGradient(canvas.width/2, canvas.height, canvas.width/2, 0);
+                grd.addColorStop(0, "#06B");
+                grd.addColorStop(1, "#4AF");
+                bufferCanvasCtx.fillStyle = grd;
+                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+            }
+
+            function animate() {
+                Update();
+                Draw();
+            }
+
+            function Update() {
+                for(var i = 0; i < bubbleArray.length; i++) {
+                    if(bubbleArray[i].y < 20) {
+                        for(i; i<bubbleArray.length - 1; i++) {
+                            bubbleArray[i] = bubbleArray[i + 1];
+                        }
+                        bubbleArray.pop();
+                    }
+                }
+
+                for(var i = 0; i < bubbleArray.length; i++) {
+                    bubbleArray[i].y -= bubbleArray[i].speed;
+                    bubbleArray[i].x += Math.sin(bubbleArray[i].y / 10) * 5;
+                }
+            }
+
+            function Draw() {
+                ctx.save();
+
+                blank();
+
+                /* Now draw everything here */
+                for(var i = 0; i < bubbleArray.length; i++) {
+                    bufferCanvasCtx.beginPath();
+                    bufferCanvasCtx.strokeStyle = "white";
+                    bufferCanvasCtx.arc(bubbleArray[i].x, bubbleArray[i].y, bubbleArray[i].radius, 0, 2*Math.PI);
+                    bufferCanvasCtx.stroke();
+                }
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+        </script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+            }
+        </style>
+    </head>
+    <body onload="main();">
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+        <input id="sin" size="3" type="text" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
