@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>This is my first EAR attempt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+
+            //Declare all of your variables here
+            /* var canvas = null;
+            var ctx = null;
+            var bufferCanvas = null;
+            var bufferCanvasCtx = null; */
+
+            //main() gets called onload body
+            function main() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                var x      = 10;
+                var y      = 10;
+                var width  = 100;
+                var height = 100;
+                var cx     = x + 0.5 * width;
+                var cy     = y + 0.5 * height;
+ctx.save();
+                ctx.fillStyle = "#ff0000";
+                ctx.fillRect(x, y, width, height);
+
+                ctx.translate(cx, cy);
+                ctx.rotate( (Math.PI / 180) * 25);  //rotate 25 degrees.
+
+                ctx.fillStyle = "#0000ff";
+                ctx.fillRect(-0.5 * width, -0.5 * height, width, height);
+ctx.restore();
+                ctx.fillStyle = "#00ff00";
+                ctx.fillRect(x + 200, y + 200, width, height);
+
+
+                var centerX = canvas.width/2;
+                var centerY = canvas.height/2;
+                var radius = 150;
+                ctx.fillStyle = "black";
+                ctx.font = "30pt Arial";
+
+                ctx.translate(centerX, centerY);
+
+                for (var i = 1; i <= 12; i++) {
+                    ctx.rotate(30 * (Math.PI/180));
+                    ctx.fillText(i, 0 - 10, 0 - radius);
+                }
+            }
+        </script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+            }
+        </style>
+    </head>
+    <body onload="main();">
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="700" width="700">Joo cannot see me!</canvas>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
