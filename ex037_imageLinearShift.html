@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>This is my first EAR attempt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+
+            //Declare all of your variables here
+            var canvas = null;
+            var ctx = null;
+            var bufferCanvas = null;
+            var bufferCanvasCtx = null;
+            var curImgNum = 1;
+            var newImgNum = 2;
+            var newImgLineArray = [];
+            var shifting = 0;
+
+            //main() gets called onload body
+            function main() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                bufferCanvas = document.createElement("canvas");
+                bufferCanvasCtx = bufferCanvas.getContext("2d");
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
+
+
+                //setInterval(addLine, 75);
+
+                Draw();
+
+                setInterval(animate, 30);
+            }
+
+            // Objects
+            function line() {
+                this.x = Math.random() * canvas.width;
+                this.w = 1;
+                this.speed = Math.random() * 10;
+                this.dir = (Math.random() > .5)? 1 : 0;
+            }
+
+            // Events
+            /* There are no events for this exercise */
+
+            // Actions
+            /* These are actual stuff that happens in the code */
+            function addLine() {
+                newImgLineArray[newImgLineArray.length] = new line();
+            }
+
+            function randomLinearShift() {
+                shifting = 1;
+            }
+
+
+            // Rendering
+            function blank() {
+                bufferCanvasCtx.fillStyle = "#0BD";
+                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+            }
+
+            function animate() {
+                Update();
+                Draw();
+            }
+
+            function Update() {
+                if (shifting == 1) {
+                    addLine();
+                    for (var i = 0; i < newImgLineArray.length; i++) {
+                        if (newImgLineArray[i].dir == 1) {
+                            newImgLineArray[i].x += newImgLineArray[i].speed;
+                            if(newImgLineArray[i].x + newImgLineArray[i].w > canvas.width) {
+                                newImgLineArray[i].dir = 0;
+                            }
+                        } else if (newImgLineArray[i].dir == 0) {
+                            newImgLineArray[i].x -= newImgLineArray[i].speed;
+                            if(newImgLineArray[i].x < 0) {
+                                newImgLineArray[i].dir = 1;
+                            }
+                        }
+                        newImgLineArray[i].w += .7;
+                    }
+                    if (newImgLineArray.length > 75) {
+                        newImgLineArray = [];
+                        curImgNum++;
+                        if (curImgNum > 4) { curImgNum = 1; }
+                        newImgNum++;
+                        if (newImgNum > 4) { newImgNum = 1; }
+                        shifting = 0;
+                    }
+                }
+            }
+
+            function Draw() {
+                ctx.save();
+
+                blank();
+
+                /* Render current image */
+                var curImgSrc = new Image();
+                curImgSrc.src = 'img/geoBanner/geo0' + curImgNum + '.jpg';
+                bufferCanvasCtx.drawImage(curImgSrc, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+
+                /* Begin rendering new image */
+                var newImgSrc = new Image();
+                newImgSrc.src = 'img/geoBanner/geo0' + newImgNum + '.jpg';
+                for (var i = 0; i < newImgLineArray.length; i++) {
+                    bufferCanvasCtx.drawImage(newImgSrc, newImgLineArray[i].x, 0, newImgLineArray[i].w, canvas.height, newImgLineArray[i].x, 0, newImgLineArray[i].w, canvas.height);
+                }
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+        </script>
+        <style>
+            canvas#canvas {
+                background-color: #0BD;
+            }
+        </style>
+    </head>
+    <body onload="main();">
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="436" width="643">Joo cannot see me!</canvas> <br/>
+        <input type="button" value="Random Linear Shift" onclick="randomLinearShift()" />
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
