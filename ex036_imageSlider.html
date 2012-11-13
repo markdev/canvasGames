@@ -24,11 +24,15 @@
             var bufferCanvasCtx = null;
             var curImgNum = 1;
             var newImgNum = 2;
+            var scroll = 0;
 
             //main() gets called onload body
             function main() {
                 canvas = document.getElementById("canvas");
                 ctx  = canvas.getContext("2d");
+
+                newPosX = -canvas.width;
+                newPosY = 0;
 
                 bufferCanvas = document.createElement("canvas");
                 bufferCanvasCtx = bufferCanvas.getContext("2d");
@@ -38,6 +42,7 @@
                 Draw();
 
                 setInterval(animate, 30);
+                //alert(newPosX);
             }
 
             // Objects
@@ -47,12 +52,8 @@
             /* There are no events for this exercise */
 
             // Actions
-            function updateImage() {
-                curImgNum++;
-                if(curImgNum > 4) {curImgNum = 1;}
-                newImgNum = curImgNum + 1;
-                if(newImgNum > 4) {newImgNum = 1;}
-            }
+            function updateImage() { scroll = 1; }
+            // function increment() {}
 
 
             // Rendering
@@ -67,7 +68,13 @@
             }
 
             function Update() {
-            /* all the state change logic goes here */
+                if (scroll == 1) {
+                    newPosX += 15;
+                    if (newPosX >= 0) {
+                        newPosX = 0;
+                        scroll = 0;
+                    }
+                }
             }
 
             function Draw() {
@@ -82,7 +89,7 @@
 
                 var newImg = new Image();
                 newImg.src = 'img/geoBanner/geo0' + newImgNum + '.jpg';
-                bufferCanvasCtx.drawImage(newImg, 0, 0, 300, 300);
+                bufferCanvasCtx.drawImage(newImg, 0, 0, canvas.width, canvas.height, newPosX, 0, canvas.width, canvas.height);
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
