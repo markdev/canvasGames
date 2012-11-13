@@ -71,7 +71,11 @@
                 if (scroll == 1) {
                     newPosX += 15;
                     if (newPosX >= 0) {
-                        newPosX = 0;
+                        newPosX = -canvas.width;
+                        curImgNum++;
+                            if(curImgNum > 4) { curImgNum = 1; }
+                        newImgNum++;
+                            if(newImgNum > 4) { newImgNum = 1; }
                         scroll = 0;
                     }
                 }
