@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>This is my first EAR attempt</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script>
+
+            //Declare all of your variables here
+            var canvas = null;
+            var ctx = null;
+            var bufferCanvas = null;
+            var bufferCanvasCtx = null;
+            var pLeft = null;
+            var pRight = null;
+            var gameBall = null;
+            var winScore = 7;
+
+            //main() gets called onload body
+            function main() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                bufferCanvas = document.createElement("canvas");
+                bufferCanvasCtx = bufferCanvas.getContext("2d");
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
+
+                pLeft = new player("left");
+                pRight = new player("right");
+                gameBall = new ball();
+
+                Draw();
+
+                setInterval(animate, 30);
+            }
+
+            // Objects
+            function player(dir) {
+                this.w = 25;
+                this.h = 100;
+                this.color = "white";
+                this.y = canvas.height/2 - this.h/2;
+                this.x = (dir == "left")? 0 : (canvas.width - this.w);
+                this.speed = 30;
+                this.score = 0;
+            }
+
+            function ball() {
+                this.w = 15;
+                this.h = this.w;
+                this.x = canvas.width/2 - this.w/2;
+                this.y = canvas.height/2 - this.h/2;
+                this.color = "white";
+                this.velx = 10;
+                this.vely = -10;
+            }
+
+            // Events
+            document.onkeydown = move;
+
+            // Actions
+            function move(e) {
+                var keystroke = e.keyCode;
+                switch(keystroke) {
+                    case 81:  // Q
+                        if (pLeft.y > 0) {pLeft.y -= pLeft.speed;}
+                        break;
+                    case 65:  // A
+                        if (pLeft.y < canvas.height - pLeft.h) {pLeft.y += pLeft.speed;}
+                        break;
+                    case 80:  // Q
+                        if (pRight.y > 0) {pRight.y -= pRight.speed;}
+                        break;
+                    case 76:  // A
+                        if (pRight.y < canvas.height - pRight.h) {pRight.y += pRight.speed;}
+                        break;
+                }
+            }
+
+            function kill(player) {
+                switch (player) {
+                    case "left":
+                        pRight.score++;
+                        gameBall.x = canvas.width/2 - gameBall.w/2;
+                        gameBall.velx = 10;
+                        break;
+                    case "right":
+                        pLeft.score++;
+                        gameBall.x = canvas.width/2 - gameBall.w/2;
+                        gameBall.velx = -10;
+                        break;
+                }
+            }
+
+
+            // Rendering
+            function blank() {
+                bufferCanvasCtx.fillStyle = "#000";
+                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.fillRect(canvas.width/2 - 2, 0, 4, canvas.height);
+            }
+
+            function animate() {
+                Update();
+                Draw();
+            }
+
+            function Update() {
+                gameBall.x += gameBall.velx;
+                    if (gameBall.x < gameBall.w) {
+                        if (gameBall.y > pLeft.y && gameBall.y < pLeft.y + pLeft.h) {
+                            gameBall.velx = -gameBall.velx;
+                        } else {
+                            kill("left");
+                        }
+                    }
+                    if (gameBall.x > canvas.width - gameBall.w) {
+                        if (gameBall.y > pRight.y && gameBall.y < pRight.y + pRight.h) {
+                            gameBall.velx = -gameBall.velx;
+                        } else {
+                            kill("right");
+                        }
+                    }
+                gameBall.y += gameBall.vely;
+                    if (gameBall.y > canvas.height - gameBall.h) {gameBall.vely = -gameBall.vely;}
+                    if (gameBall.y < 0) {gameBall.vely = -gameBall.vely;}
+
+                if (pLeft.score >= winScore) {alert("Left wins!");}
+                if (pRight.score >= winScore) {alert("Right wins!");}
+            }
+
+            function Draw() {
+                ctx.save();
+
+                blank();
+
+                /* Now draw playerLeft */
+                bufferCanvasCtx.fillStyle = pLeft.color;
+                bufferCanvasCtx.fillRect(pLeft.x, pLeft.y, pLeft.w, pLeft.h);
+
+                /* Now draw playerRight */
+                bufferCanvasCtx.fillStyle = pRight.color;
+                bufferCanvasCtx.fillRect(pRight.x, pRight.y, pRight.w, pRight.h);
+
+                /* Now draw the ball */
+                bufferCanvasCtx.fillStyle = gameBall.color;
+                bufferCanvasCtx.fillRect(gameBall.x, gameBall.y, gameBall.w, gameBall.h);
+
+                /* write the score */
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "30pt Arial";
+                var scoreStr = pLeft.score + "  " + pRight.score;
+                bufferCanvasCtx.fillText(scoreStr, canvas.width/2 - 32, 40);
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+        </script>
+        <style>
+            canvas#canvas {
+                background-color: #000;
+            }
+        </style>
+    </head>
+    <body onload="main();">
+
+        <!-- Add your site or application content here -->
+        <canvas id="canvas" height="700" width="1000">Joo cannot see me!</canvas>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
