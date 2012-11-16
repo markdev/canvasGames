@@ -22,6 +22,7 @@
             var ctx = null;
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
+            var blArray = [];
 
             //main() gets called onload body
             function main() {
@@ -35,11 +36,24 @@
 
                 Draw();
 
-                setInterval(animate, 30);
+                setInterval(animate, 3000);
             }
 
             // Objects
-            /* Add your objects here */
+            for (var i = 0; i < 20; i++) {
+                blArray[blArray.length] = [];
+                for (var j = 0; j < 10; j++) {
+                    blArray[i][blArray[i].length] = new tile();
+                }
+            }
+
+            function tile() {
+                this.w = 20;
+                this.h = this.w;
+                this.x = canvas.width * 10 * 20;
+                this.y = canvas.height * 20 * 20;
+                this.val = 0;
+            }
 
             // Events
             /* There are no events for this exercise */
@@ -67,6 +81,16 @@
                 ctx.save();
 
                 blank();
+
+                for (var i = 0; i < blArray.length; i++) {
+
+                    alert(blArray[0].length);
+                    /*for (var j = 0; j < blArray[i].length; j++) {
+                        /*bufferCanvasCtx.strokeStyle = "black";
+                        bufferCanvasCtx.strokeRect(blArray[i][j].x, blArray[i][j].y, blArray[i][j].w, blArray[i][j].h);*/
+
+                    //}
+                }
 
                 /* Now draw everything here */
                 /* Remember to start with bufferCanvasCtx */
