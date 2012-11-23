@@ -28,6 +28,12 @@
             var hero = null;
             var weapon = 1;
             var peaShooterArray = [];
+            var timer = null;
+            var level = 0;
+            var foo = null;
+            var bar = null;
+            var animInt = null;
+            var countInt = null;
 
             //main() gets called onload body
             function main() {
@@ -114,7 +120,14 @@
 
             function playGame(mode) {
                 hero = new spaceShip();
-                setInterval(animate, 30);
+                timer = 10;
+
+                if (animInt) { window.clearInterval(animInt); }
+                if (countInt) { window.clearInterval(countInt); }
+
+                animInt = setInterval(animate, 30);
+                countInt = setInterval(countdown, 1000);
+                level = mode;
             }
 
 
@@ -127,6 +140,14 @@
             function animate() {
                 Update();
                 Draw();
+            }
+
+            function countdown() {
+                timer -= 1;
+                if(timer <= 0) {
+                    mode++;
+                    playGame(mode);
+                }
             }
 
             function Update() {
@@ -150,6 +171,15 @@
                     bufferCanvasCtx.fillStyle = peaShooterArray[i].color;
                     bufferCanvasCtx.fillRect(peaShooterArray[i].x, peaShooterArray[i].y, peaShooterArray[i].w, peaShooterArray[i].h);
                 }
+
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "30pt Arial";
+                bufferCanvasCtx.fillText(timer, canvas.width/2 - 20, 50);
+
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "20pt Arial";
+                var levelText = "Level " + level;
+                bufferCanvasCtx.fillText(levelText, 10, 45);
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
