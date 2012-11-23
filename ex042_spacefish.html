@@ -17,7 +17,10 @@
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
         <script>
 
-            //Declare all of your variables here
+            /*
+            *   Global Variables
+            *
+            */
             var canvas = null;
             var ctx = null;
             var bufferCanvas = null;
@@ -41,35 +44,12 @@
             var lives = null;
             var maxTime = null;
 
-            //initialize() gets called onload body
-            function initialize() {
-                canvas = document.getElementById("canvas");
-                ctx  = canvas.getContext("2d");
-
-                bufferCanvas = document.createElement("canvas");
-                bufferCanvasCtx = bufferCanvas.getContext("2d");
-                bufferCanvasCtx.canvas.width = ctx.canvas.width;
-                bufferCanvasCtx.canvas.height = ctx.canvas.height;
-
-                //initialize game variables
-                killCount = 0;
-                level = 0;
-                lives = 2;
-                maxTime = 10;
 
 
-                if (mode == "start") {
-                    score = 0;
-                    openingTimer = setInterval(drawOpening, 300);
-                }
-
-
-                if (mode == "gameOver") {
-                    endingTimer = setInterval(drawEnding, 300);
-                }
-            }
-
-            // Objects
+            /*
+            *   Objects
+            *
+            */
             function spaceShip() {
                 this.w = 50;
                 this.h = this.w;
@@ -96,12 +76,16 @@
                 this.velx = 25;
             }
 
-            // Events
+
+
+            /*
+            *   Events & Actions
+            *
+            */
             document.onkeydown = keyPress;
             document.onmousemove = moveMouse;
             document.onmouseup = mousePress;
 
-            // Actions
             function keyPress(e) {
                 if (mode == "start") {
                     clearInterval(openingTimer);
@@ -134,10 +118,94 @@
                 }
             }
 
+
+
+            /*
+            *     Game Actions
+            *
+            */
             function fireWeapon(weapon) {
                 // Peashooter
                 if (weapon == 1) {
                     blastArray[blastArray.length] = new peaShooterBlast();
+                }
+            }
+
+            function countdown() {
+                timer -= 1;
+                if(timer <= 0) {
+                    level++;
+                    playLevel();
+                }
+            }
+
+            function addEnemy() {
+                enemyArray[enemyArray.length] = new bigBloater();
+            }
+
+            function kill(i, j) {
+                for (i; i < blastArray.length - 1; i++) {
+                    blastArray[i] = blastArray[i+1];
+                }
+                blastArray.pop();
+                for (j; j < enemyArray.length - 1; j++) {
+                    enemyArray[j] = enemyArray[j+1];
+                }
+                enemyArray.pop();
+                killCount += 1;
+            }
+
+            function die() {
+                lives--;
+                if (lives < 0) {
+                    gameOver();
+                }
+                else {
+                    playLevel();
+                }
+            }
+
+            function gameOver() {
+                if (animInt) { window.clearInterval(animInt); }
+                if (countInt) { window.clearInterval(countInt); }
+                if (enemyInt) { window.clearInterval(enemyInt); }
+                blastArray = [];
+                enemyArray = [];
+
+                mode = "gameOver";
+
+                initialize();
+            }
+
+
+            /*
+            *       Game State Functions
+            *
+            */
+            function initialize() {
+                canvas = document.getElementById("canvas");
+                ctx  = canvas.getContext("2d");
+
+                bufferCanvas = document.createElement("canvas");
+                bufferCanvasCtx = bufferCanvas.getContext("2d");
+                bufferCanvasCtx.canvas.width = ctx.canvas.width;
+                bufferCanvasCtx.canvas.height = ctx.canvas.height;
+
+                //initialize game variables
+                killCount = 0;
+                level = 0;
+                lives = 2;
+                maxTime = 10;
+
+
+                if (mode == "start") {
+                    score = 0;
+                    openingTimer = setInterval(drawOpening, 300);
+                }
+
+
+                if (mode == "gameOver") {
+                    endingTimer = setInterval(drawEnding, 300);
                 }
             }
 
@@ -156,128 +224,13 @@
                 mode = "levelSplash";
                 levelSplash();
 
-                // initialize level
+                // play the level
+                mode = "game";
                 setTimeout(function() {
                     animInt = setInterval(animate, 30);
                     countInt = setInterval(countdown, 1000);
                     enemyInt = setInterval(addEnemy, 1000);
-                }, 3000);
-            }
-
-            function kill(i, j) {
-                for (i; i < blastArray.length - 1; i++) {
-                    blastArray[i] = blastArray[i+1];
-                }
-                blastArray.pop();
-                for (j; j < enemyArray.length - 1; j++) {
-                    enemyArray[j] = enemyArray[j+1];
-                }
-                enemyArray.pop();
-                killCount += 1;
-            }
-
-            function die() {
-                lives--;
-                if (lives < 0) { gameOver(); }
-                else { playLevel(); }
-            }
-
-            // Rendering
-            function blank() {
-                bufferCanvasCtx.fillStyle = "#000";
-                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
-            }
-
-            function animate() {
-                Update();
-                Draw();
-            }
-
-            function countdown() {
-                timer -= 1;
-                if(timer <= 0) {
-                    level++;
-                    playLevel();
-                }
-            }
-
-            function addEnemy() {
-                enemyArray[enemyArray.length] = new bigBloater();
-            }
-
-            function Update() {
-                for (var i = 0; i < blastArray.length; i++) {
-                    blastArray[i].x += blastArray[i].velx;
-                    if(blastArray[i].x > canvas.width) {
-                        blastArray.shift();
-                    }
-                }
-                for (var i = 0; i < enemyArray.length; i++) {
-                    enemyArray[i].x += enemyArray[i].velx;
-                }
-
-                for (var i = 0; i < blastArray.length; i++) {
-                    for (var j = 0; j < enemyArray.length; j++) {
-                        if (
-                                (blastArray[i].x + blastArray[i].w > enemyArray[j].x) &&
-                                        (blastArray[i].x < enemyArray[j].x + enemyArray[j].w) &&
-                                        (blastArray[i].y + blastArray[i].h > enemyArray[j].y) &&
-                                        (blastArray[i].y < enemyArray[j].y + enemyArray[j].h)
-                                ) { kill(i, j); }
-                    }
-                }
-                for (var i = 0; i < enemyArray.length; i++) {
-                    if (
-                            (hero.x + hero.w > enemyArray[i].x) &&
-                            (hero.x < enemyArray[i].x + enemyArray[i].w) &&
-                            (hero.y + hero.h > enemyArray[i].y) &&
-                            (hero.y < enemyArray[i].y + enemyArray[i].h)
-                       ) { die(); }
-                }
-            }
-
-            function Draw() {
-                ctx.save();
-
-                blank();
-
-                bufferCanvasCtx.fillStyle = "white";
-                bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
-
-                for (var i = 0; i < blastArray.length; i++) {
-                    bufferCanvasCtx.fillStyle = blastArray[i].color;
-                    bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
-                }
-
-                for (var i = 0; i < enemyArray.length; i++) {
-                    bufferCanvasCtx.fillStyle = enemyArray[i].color;
-                    bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
-                }
-
-                // Timer
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.font = "30pt Arial";
-                bufferCanvasCtx.fillText(timer, canvas.width/2 - 20, 50);
-                // Level
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.font = "20pt Arial";
-                var levelText = "Level " + level;
-                bufferCanvasCtx.fillText(levelText, 10, 45);
-                // Kill Count
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.font = "20pt Arial";
-                var killText = "Kills: " + killCount;
-                bufferCanvasCtx.fillText(killText, 250, 45);
-                // Lives
-                bufferCanvasCtx.fillStyle = "#DDD";
-                for (var i = 1; i <= lives; i++) {
-                    var dist = 900 + (70 * i);
-                    bufferCanvasCtx.fillRect(dist, 15, hero.w, hero.h);
-                }
-
-                // copy the entire rendered image from the bugger canvas to the visible one
-                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
-                ctx.restore();
+                }, 1000);
             }
 
             function drawOpening() {
@@ -338,17 +291,100 @@
                 ctx.restore();
             }
 
-            function gameOver() {
-                if (animInt) { window.clearInterval(animInt); }
-                if (countInt) { window.clearInterval(countInt); }
-                if (enemyInt) { window.clearInterval(enemyInt); }
-                blastArray = [];
-                enemyArray = [];
 
-                mode = "gameOver";
 
-                initialize();
+
+            /*
+             *  Updating and Rendering
+             *
+            */
+            function blank() {
+                bufferCanvasCtx.fillStyle = "#000";
+                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
             }
+
+            function animate() {
+                Update();
+                Draw();
+            }
+
+            function Update() {
+                for (var i = 0; i < blastArray.length; i++) {
+                    blastArray[i].x += blastArray[i].velx;
+                    if(blastArray[i].x > canvas.width) {
+                        blastArray.shift();
+                    }
+                }
+                for (var i = 0; i < enemyArray.length; i++) {
+                    enemyArray[i].x += enemyArray[i].velx;
+                }
+
+                for (var i = 0; i < blastArray.length; i++) {
+                    for (var j = 0; j < enemyArray.length; j++) {
+                        if (
+                                (blastArray[i].x + blastArray[i].w > enemyArray[j].x) &&
+                                        (blastArray[i].x < enemyArray[j].x + enemyArray[j].w) &&
+                                        (blastArray[i].y + blastArray[i].h > enemyArray[j].y) &&
+                                        (blastArray[i].y < enemyArray[j].y + enemyArray[j].h)
+                                ) { kill(i, j); break; }
+                    }
+                }
+                for (var i = 0; i < enemyArray.length; i++) {
+                    if (
+                            (hero.x + hero.w > enemyArray[i].x) &&
+                            (hero.x < enemyArray[i].x + enemyArray[i].w) &&
+                            (hero.y + hero.h > enemyArray[i].y) &&
+                            (hero.y < enemyArray[i].y + enemyArray[i].h)
+                       ) { die(); break; }
+                }
+            }
+
+            function Draw() {
+                ctx.save();
+
+                blank();
+
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
+
+                for (var i = 0; i < blastArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = blastArray[i].color;
+                    bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
+                }
+
+                for (var i = 0; i < enemyArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = enemyArray[i].color;
+                    bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
+                }
+
+                // Timer
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "30pt Arial";
+                bufferCanvasCtx.fillText(timer, canvas.width/2 - 20, 50);
+                // Level
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "20pt Arial";
+                var levelText = "Level " + level;
+                bufferCanvasCtx.fillText(levelText, 10, 45);
+                // Kill Count
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "20pt Arial";
+                var killText = "Kills: " + killCount;
+                bufferCanvasCtx.fillText(killText, 250, 45);
+                // Lives
+                bufferCanvasCtx.fillStyle = "#DDD";
+                for (var i = 1; i <= lives; i++) {
+                    var dist = 900 + (70 * i);
+                    bufferCanvasCtx.fillRect(dist, 15, hero.w, hero.h);
+                }
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+
+
+
         </script>
         <style>
             canvas#canvas {
