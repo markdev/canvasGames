@@ -63,17 +63,10 @@
                     openingTimer = setInterval(drawOpening, 300);
                 }
 
-                /* if (!isNaN(mode)) {
-                    playLevel(mode);
-                } */
 
                 if (mode == "gameOver") {
                     endingTimer = setInterval(drawEnding, 300);
                 }
-
-                //Draw();
-
-                //setInterval(animate, 30);
             }
 
             // Objects
@@ -152,16 +145,23 @@
                 hero = new spaceShip();
                 timer = maxTime;
 
+                // clear compound variables
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
                 if (enemyInt) { window.clearInterval(enemyInt); }
                 blastArray = [];
                 enemyArray = [];
 
-                animInt = setInterval(animate, 30);
-                countInt = setInterval(countdown, 1000);
-                enemyInt = setInterval(addEnemy, 1000);
+                // level splash screen
+                mode = "levelSplash";
+                levelSplash();
 
+                // initialize level
+                setTimeout(function() {
+                    animInt = setInterval(animate, 30);
+                    countInt = setInterval(countdown, 1000);
+                    enemyInt = setInterval(addEnemy, 1000);
+                }, 3000);
             }
 
             function kill(i, j) {
@@ -321,6 +321,19 @@
                 else { restartText = "Press any key to restart"; }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+
+            function levelSplash() {
+                ctx.save();
+                blank();
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.font = "40pt Arial";
+
+                var levelText = "Level " + level;
+
+                bufferCanvasCtx.fillText(levelText, bufferCanvas.width/2 - 100, bufferCanvas.height/2 - 20);
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
                 ctx.restore();
             }
