@@ -13,7 +13,7 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
         <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/initialize.css">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
         <script>
 
@@ -28,20 +28,21 @@
             var score = null;
             var hero = null;
             var weapon = 1;
-            var peaShooterArray = [];
+            var blastArray = [];
             var timer = null;
-            var level = 0;
+            var level = null;
             var foo = null;
             var bar = null;
             var animInt = null;
             var countInt = null;
             var enemyInt = null;
             var enemyArray = [];
-            var killCount = 0;
-            var lives = 2;
+            var killCount = null;
+            var lives = null;
+            var maxTime = null;
 
-            //main() gets called onload body
-            function main() {
+            //initialize() gets called onload body
+            function initialize() {
                 canvas = document.getElementById("canvas");
                 ctx  = canvas.getContext("2d");
 
@@ -50,14 +51,21 @@
                 bufferCanvasCtx.canvas.width = ctx.canvas.width;
                 bufferCanvasCtx.canvas.height = ctx.canvas.height;
 
+                //initialize game variables
+                killCount = 0;
+                level = 0;
+                lives = 2;
+                maxTime = 10;
+
+
                 if (mode == "start") {
                     score = 0;
                     openingTimer = setInterval(drawOpening, 300);
                 }
 
-                if (!isNaN(mode)) {
+                /* if (!isNaN(mode)) {
                     playLevel(mode);
-                }
+                } */
 
                 if (mode == "gameOver") {
                     endingTimer = setInterval(drawEnding, 300);
@@ -104,67 +112,63 @@
             function keyPress(e) {
                 if (mode == "start") {
                     clearInterval(openingTimer);
-                    mode = 1;
-                    main();
+                    mode = "game";
+                    level = 1;
+                    playLevel();
                 }
                 if (mode == "gameOver") {
                     clearInterval(endingTimer);
                     mode = "start";
                     lives = 2;
                     killCount = 0;
-                    main();
+                    initialize();
                 }
             }
 
             function moveMouse(e) {
-                if (!isNaN(mode)) {
-                    if (hero) {
-                        if (e.pageY < canvas.height) {
-                            hero.y = e.pageY;
-                        } else {
-                            hero.y = canvas.height - hero.h;
-                        }
+                if (hero) {
+                    if (e.pageY < canvas.height) {
+                        hero.y = e.pageY;
+                    } else {
+                        hero.y = canvas.height - hero.h;
                     }
                 }
             }
 
             function mousePress() {
-                if (!isNaN(mode)) {
-                    if (hero) {
-                        fireWeapon(weapon);
-                    }
+                if (hero) {
+                    fireWeapon(weapon);
                 }
             }
 
             function fireWeapon(weapon) {
                 // Peashooter
                 if (weapon == 1) {
-                    peaShooterArray[peaShooterArray.length] = new peaShooterBlast();
+                    blastArray[blastArray.length] = new peaShooterBlast();
                 }
             }
 
-            function playLevel(mode) {
+            function playLevel() {
                 hero = new spaceShip();
-                timer = 10;
+                timer = maxTime;
 
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
                 if (enemyInt) { window.clearInterval(enemyInt); }
-                peaShooterArray = [];
+                blastArray = [];
                 enemyArray = [];
 
                 animInt = setInterval(animate, 30);
                 countInt = setInterval(countdown, 1000);
                 enemyInt = setInterval(addEnemy, 1000);
 
-                level = mode;
             }
 
             function kill(i, j) {
-                for (i; i < peaShooterArray.length - 1; i++) {
-                    peaShooterArray[i] = peaShooterArray[i+1];
+                for (i; i < blastArray.length - 1; i++) {
+                    blastArray[i] = blastArray[i+1];
                 }
-                peaShooterArray.pop();
+                blastArray.pop();
                 for (j; j < enemyArray.length - 1; j++) {
                     enemyArray[j] = enemyArray[j+1];
                 }
@@ -175,7 +179,7 @@
             function die() {
                 lives--;
                 if (lives < 0) { gameOver(); }
-                else { playLevel(mode); }
+                else { playLevel(); }
             }
 
             // Rendering
@@ -192,8 +196,8 @@
             function countdown() {
                 timer -= 1;
                 if(timer <= 0) {
-                    mode++;
-                    playLevel(mode);
+                    level++;
+                    playLevel();
                 }
             }
 
@@ -202,23 +206,23 @@
             }
 
             function Update() {
-                for (var i = 0; i < peaShooterArray.length; i++) {
-                    peaShooterArray[i].x += peaShooterArray[i].velx;
-                    if(peaShooterArray[i].x > canvas.width) {
-                        peaShooterArray.shift();
+                for (var i = 0; i < blastArray.length; i++) {
+                    blastArray[i].x += blastArray[i].velx;
+                    if(blastArray[i].x > canvas.width) {
+                        blastArray.shift();
                     }
                 }
                 for (var i = 0; i < enemyArray.length; i++) {
                     enemyArray[i].x += enemyArray[i].velx;
                 }
 
-                for (var i = 0; i < peaShooterArray.length; i++) {
+                for (var i = 0; i < blastArray.length; i++) {
                     for (var j = 0; j < enemyArray.length; j++) {
                         if (
-                                (peaShooterArray[i].x + peaShooterArray[i].w > enemyArray[j].x) &&
-                                        (peaShooterArray[i].x < enemyArray[j].x + enemyArray[j].w) &&
-                                        (peaShooterArray[i].y + peaShooterArray[i].h > enemyArray[j].y) &&
-                                        (peaShooterArray[i].y < enemyArray[j].y + enemyArray[j].h)
+                                (blastArray[i].x + blastArray[i].w > enemyArray[j].x) &&
+                                        (blastArray[i].x < enemyArray[j].x + enemyArray[j].w) &&
+                                        (blastArray[i].y + blastArray[i].h > enemyArray[j].y) &&
+                                        (blastArray[i].y < enemyArray[j].y + enemyArray[j].h)
                                 ) { kill(i, j); }
                     }
                 }
@@ -240,9 +244,9 @@
                 bufferCanvasCtx.fillStyle = "white";
                 bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
-                for (var i = 0; i < peaShooterArray.length; i++) {
-                    bufferCanvasCtx.fillStyle = peaShooterArray[i].color;
-                    bufferCanvasCtx.fillRect(peaShooterArray[i].x, peaShooterArray[i].y, peaShooterArray[i].w, peaShooterArray[i].h);
+                for (var i = 0; i < blastArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = blastArray[i].color;
+                    bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
                 }
 
                 for (var i = 0; i < enemyArray.length; i++) {
@@ -325,12 +329,12 @@
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
                 if (enemyInt) { window.clearInterval(enemyInt); }
-                peaShooterArray = [];
+                blastArray = [];
                 enemyArray = [];
 
                 mode = "gameOver";
 
-                main();
+                initialize();
             }
         </script>
         <style>
@@ -339,7 +343,7 @@
             }
         </style>
     </head>
-    <body onload="main();">
+    <body onload="initialize();">
 
         <!-- Add your site or application content here -->
         <canvas id="canvas" height="700" width="1200">Joo cannot see me!</canvas>
@@ -347,7 +351,7 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/initialize.js"></script>
 
 
 
