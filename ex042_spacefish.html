@@ -24,6 +24,7 @@
             var bufferCanvasCtx = null;
             var mode = "start";
             var startText = "Press any key to start";
+            var restartText = "Press any key to restart";
             var score = null;
             var hero = null;
             var weapon = 1;
@@ -37,7 +38,7 @@
             var enemyInt = null;
             var enemyArray = [];
             var killCount = 0;
-            var lives = 3;
+            var lives = 2;
 
             //main() gets called onload body
             function main() {
@@ -56,6 +57,10 @@
 
                 if (!isNaN(mode)) {
                     playLevel(mode);
+                }
+
+                if (mode == "gameOver") {
+                    endingTimer = setInterval(drawEnding, 300);
                 }
 
                 //Draw();
@@ -102,6 +107,13 @@
                     mode = 1;
                     main();
                 }
+                if (mode == "gameOver") {
+                    clearInterval(endingTimer);
+                    mode = "start";
+                    lives = 2;
+                    killCount = 0;
+                    main();
+                }
             }
 
             function moveMouse(e) {
@@ -133,7 +145,7 @@
 
             function playLevel(mode) {
                 hero = new spaceShip();
-                timer = 60;
+                timer = 10;
 
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
@@ -162,7 +174,7 @@
 
             function die() {
                 lives--;
-                if (lives <= 0) { gameOver(); }
+                if (lives < 0) { gameOver(); }
                 else { playLevel(mode); }
             }
 
@@ -288,6 +300,27 @@
                 ctx.restore();
             }
 
+            function drawEnding() {
+                ctx.save();
+
+                blank();
+
+                bufferCanvasCtx.font = "50pt Arial";
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.fillText("GAME OVER", canvas.width/2 - 170, canvas.height/2);
+
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.font = "25pt Arial";
+                bufferCanvasCtx.fillText(restartText, canvas.width/2 - 150, canvas.height/2 + 90);
+
+                if (restartText == "Press any key to restart")  {restartText = "";}
+                else { restartText = "Press any key to restart"; }
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+
             function gameOver() {
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
@@ -297,15 +330,7 @@
 
                 mode = "gameOver";
 
-                //ctx.save();
-
-                blank();
-
-                bufferCanvasCtx.font = "50pt Arial";
-                bufferCanvasCtx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
-
-                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
-                //ctx.restore();
+                main();
             }
         </script>
         <style>
