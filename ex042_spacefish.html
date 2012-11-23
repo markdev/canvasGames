@@ -36,6 +36,8 @@
             var countInt = null;
             var enemyInt = null;
             var enemyArray = [];
+            var killCount = 0;
+            var lives = 3;
 
             //main() gets called onload body
             function main() {
@@ -76,7 +78,7 @@
                 this.x = canvas.width;
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "green";
-                this.velx = -5;
+                this.velx = -25;
             }
 
             function peaShooterBlast() {
@@ -131,7 +133,7 @@
 
             function playLevel(mode) {
                 hero = new spaceShip();
-                timer = 10;
+                timer = 60;
 
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
@@ -141,11 +143,28 @@
 
                 animInt = setInterval(animate, 30);
                 countInt = setInterval(countdown, 1000);
-                enemyInt = setInterval(addEnemy, 300);
+                enemyInt = setInterval(addEnemy, 1000);
 
                 level = mode;
             }
 
+            function kill(i, j) {
+                for (i; i < peaShooterArray.length - 1; i++) {
+                    peaShooterArray[i] = peaShooterArray[i+1];
+                }
+                peaShooterArray.pop();
+                for (j; j < enemyArray.length - 1; j++) {
+                    enemyArray[j] = enemyArray[j+1];
+                }
+                enemyArray.pop();
+                killCount += 1;
+            }
+
+            function die() {
+                lives--;
+                if (lives <= 0) { gameOver(); }
+                else { playLevel(mode); }
+            }
 
             // Rendering
             function blank() {
@@ -180,6 +199,25 @@
                 for (var i = 0; i < enemyArray.length; i++) {
                     enemyArray[i].x += enemyArray[i].velx;
                 }
+
+                for (var i = 0; i < peaShooterArray.length; i++) {
+                    for (var j = 0; j < enemyArray.length; j++) {
+                        if (
+                                (peaShooterArray[i].x + peaShooterArray[i].w > enemyArray[j].x) &&
+                                        (peaShooterArray[i].x < enemyArray[j].x + enemyArray[j].w) &&
+                                        (peaShooterArray[i].y + peaShooterArray[i].h > enemyArray[j].y) &&
+                                        (peaShooterArray[i].y < enemyArray[j].y + enemyArray[j].h)
+                                ) { kill(i, j); }
+                    }
+                }
+                for (var i = 0; i < enemyArray.length; i++) {
+                    if (
+                            (hero.x + hero.w > enemyArray[i].x) &&
+                            (hero.x < enemyArray[i].x + enemyArray[i].w) &&
+                            (hero.y + hero.h > enemyArray[i].y) &&
+                            (hero.y < enemyArray[i].y + enemyArray[i].h)
+                       ) { die(); }
+                }
             }
 
             function Draw() {
@@ -200,14 +238,26 @@
                     bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
                 }
 
+                // Timer
                 bufferCanvasCtx.fillStyle = "#DDD";
                 bufferCanvasCtx.font = "30pt Arial";
                 bufferCanvasCtx.fillText(timer, canvas.width/2 - 20, 50);
-
+                // Level
                 bufferCanvasCtx.fillStyle = "#DDD";
                 bufferCanvasCtx.font = "20pt Arial";
                 var levelText = "Level " + level;
                 bufferCanvasCtx.fillText(levelText, 10, 45);
+                // Kill Count
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "20pt Arial";
+                var killText = "Kills: " + killCount;
+                bufferCanvasCtx.fillText(killText, 250, 45);
+                // Lives
+                bufferCanvasCtx.fillStyle = "#DDD";
+                for (var i = 1; i <= lives; i++) {
+                    var dist = 900 + (70 * i);
+                    bufferCanvasCtx.fillRect(dist, 15, hero.w, hero.h);
+                }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
@@ -236,6 +286,26 @@
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
                 ctx.restore();
+            }
+
+            function gameOver() {
+                if (animInt) { window.clearInterval(animInt); }
+                if (countInt) { window.clearInterval(countInt); }
+                if (enemyInt) { window.clearInterval(enemyInt); }
+                peaShooterArray = [];
+                enemyArray = [];
+
+                mode = "gameOver";
+
+                //ctx.save();
+
+                blank();
+
+                bufferCanvasCtx.font = "50pt Arial";
+                bufferCanvasCtx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                //ctx.restore();
             }
         </script>
         <style>
