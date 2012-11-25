@@ -196,11 +196,13 @@
                 this.velx = -15;
                 this.updatePos = function() {
                     this.x += this.velx;
+                    if ((this.x < 900 && this.x > 875) || (this.x < 400 && this.x > 375)) {
+                        enemyArray[enemyArray.length] = new spitFireBullet(this.x, this.y + this.h/2);
+                    }
                 }
                 this.getHitBy = function(i, j) {
                     kill(i, j);
                 }
-                window.setInterval(function(){ enemyArray[enemyArray.length] = new spitFireBullet(canvas.width, 300); }, 1000);
             }
 
             function spitFireBullet(x, y) {
