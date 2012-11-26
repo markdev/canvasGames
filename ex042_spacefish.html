@@ -94,6 +94,7 @@
                 this.x = canvas.width - 100;
                 this.y = Math.random() * canvas.height;
                 this.color = "red";
+                this.weapon = "dualLaser";
                 this.velx = -10;
                 this.updatePos = function() {
                     this.x += this.velx;
@@ -591,7 +592,15 @@
                             (hero.y < enemyArray[i].y + enemyArray[i].h)
                        ) { die(); break; }
                 }
-                if (orb) { orb.updatePos(); }
+                if (orb) {
+                    orb.updatePos();
+                    if (
+                            (hero.x + hero.w > orb.x) &&
+                            (hero.x < orb.x + orb.radius) &&
+                            (hero.y + hero.h > orb.y) &&
+                            (hero.y < orb.y + orb.radius)
+                       ) { hero.weapon = orb.weapon; }
+                }
             }
 
             function Draw() {
@@ -617,7 +626,7 @@
                 bufferCanvasCtx.beginPath();
                 bufferCanvasCtx.arc(orb.x, orb.y, orb.radius, 0, 2 * Math.PI);
                 bufferCanvasCtx.fill();
-                
+
                 // Timer
                 bufferCanvasCtx.fillStyle = "#DDD";
                 bufferCanvasCtx.font = "30pt Arial";
