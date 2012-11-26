@@ -43,6 +43,7 @@
             var killCount = null;
             var lives = null;
             var maxTime = null;
+            var orb = null;
 
 
             /*
@@ -85,6 +86,17 @@
                             blastArray[blastArray.length] = new bouncyBall(10);
                             break;
                     }
+                };
+            }
+
+            function weaponOrb() {
+                this.radius = 15;
+                this.x = canvas.width - 100;
+                this.y = Math.random() * canvas.height;
+                this.color = "red";
+                this.velx = -10;
+                this.updatePos = function() {
+                    this.x += this.velx;
                 };
             }
 
@@ -464,6 +476,10 @@
 
                 // play the level
                 mode = "game";
+
+                //cast the orb temporarily
+                orb = new weaponOrb();
+
                 setTimeout(function() {
                     animInt = setInterval(animate, 30);
                     countInt = setInterval(countdown, 1000);
@@ -575,6 +591,7 @@
                             (hero.y < enemyArray[i].y + enemyArray[i].h)
                        ) { die(); break; }
                 }
+                if (orb) { orb.updatePos(); }
             }
 
             function Draw() {
@@ -595,6 +612,12 @@
                     bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
                 }
 
+                // Weapon Orb
+                bufferCanvasCtx.fillStyle = orb.color;
+                bufferCanvasCtx.beginPath();
+                bufferCanvasCtx.arc(orb.x, orb.y, orb.radius, 0, 2 * Math.PI);
+                bufferCanvasCtx.fill();
+                
                 // Timer
                 bufferCanvasCtx.fillStyle = "#DDD";
                 bufferCanvasCtx.font = "30pt Arial";
