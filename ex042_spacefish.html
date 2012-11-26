@@ -45,6 +45,19 @@
             var maxTime = null;
 
 
+            /*
+            *   Level Data
+            */
+            var levelData = [];
+                levelData[1] = ["bigBloater", "bigBloater", "speedyBlue"];
+                levelData[2] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
+                levelData[3] = ["speedyBlue", "speedyBlue", "sinusoidSwimmer"];
+                levelData[4] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
+                levelData[5] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
+                levelData[6] = ["homingFish", "splitFishBig", "spitFireFish"];
+                levelData[7] = ["homingFish", "splitFishBig", "spitFireFish"];
+
+
 
             /*
             *   Objects
@@ -296,24 +309,27 @@
             }
 
             function addEnemy() {
-                var enemyTypeArray = [];
-                enemyTypeArray[enemyTypeArray.length] = "bigBloater";
-                enemyTypeArray[enemyTypeArray.length] = "speedyBlue";
-                enemyTypeArray[enemyTypeArray.length] = "sinusoidSwimmer";
-                var num = Math.ceil(Math.random() * enemyTypeArray.length);
-                switch (num) {
-                    case 1:
-                        enemyArray[enemyArray.length] = new spitFireFish();
-                        break;
-                    case 2:
-                        enemyArray[enemyArray.length] = new spitFireFish();
-                        break;
-                    case 3:
-                        //enemyArray[enemyArray.length] = new sinusoidSwimmer();
-                        //enemyArray[enemyArray.length] = new homingFish();
-                        enemyArray[enemyArray.length] = new spitFireFish();
-                        break;
-                }
+                var num = Math.floor(Math.random() * levelData[level].length);
+                    switch (levelData[level][num]) {
+                        case "bigBloater":
+                            enemyArray[enemyArray.length] = new bigBloater();
+                            break;
+                        case "speedyBlue":
+                            enemyArray[enemyArray.length] = new speedyBlue();
+                            break;
+                        case "sinusoidSwimmer":
+                            enemyArray[enemyArray.length] = new sinusoidSwimmer();
+                            break;
+                        case "homingFish":
+                            enemyArray[enemyArray.length] = new homingFish();
+                            break;
+                        case "splitFishBig":
+                            enemyArray[enemyArray.length] = new splitFishBig();
+                            break;
+                        case "spitFireFish":
+                            enemyArray[enemyArray.length] = new spitFireFish();
+                            break;
+                    }
             }
 
             function kill(i, j) {
