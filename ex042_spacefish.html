@@ -69,7 +69,7 @@
                 this.x = 0;
                 this.y = canvas.height/2 - this.h/2;
                 this.color = "white";
-                this.weapon = "dualLaser";
+                this.weapon = "bouncyBalls";
                 this.fire = function() {
                     switch (this.weapon) {
                         case "peaShooter":
@@ -80,8 +80,10 @@
                             blastArray[blastArray.length] = new dualLaser(-20);
                             break;
                         case "bouncyBalls":
-                            /* blastArray[blastArray.length] = new bouncyBall();
-                            */
+                            blastArray[blastArray.length] = new bouncyBall(-10);
+                            blastArray[blastArray.length] = new bouncyBall(0);
+                            blastArray[blastArray.length] = new bouncyBall(10);
+                            break;
                     }
                 };
             }
@@ -263,6 +265,9 @@
                 this.x = hero.w;
                 this.color = "yellow";
                 this.velx = 25;
+                this.updatePos = function() {
+                    this.x += this.velx;
+                };
             }
 
             function dualLaser(loc) {
@@ -272,9 +277,25 @@
                 this.x = hero.w;
                 this.color = "red";
                 this.velx = 25;
+                this.updatePos = function() {
+                    this.x += this.velx;
+                };
             }
 
-
+            function bouncyBall(dir) {
+                this.w = 20;
+                this.h = 20;
+                this.y = hero.y + hero.h/2 - this.h/2;
+                this.x = hero.w;
+                this.color = "blue";
+                this.velx = 20;
+                this.vely = dir;
+                this.updatePos = function() {
+                    if (this.y > canvas.height || this.y < 0) { this.vely = -this.vely; }
+                    this.x += this.velx;
+                    this.y += this.vely;
+                };
+            }
 
 
 
@@ -527,7 +548,7 @@
 
             function Update() {
                 for (var i = 0; i < blastArray.length; i++) {
-                    blastArray[i].x += blastArray[i].velx;
+                    blastArray[i].updatePos();
                     if(blastArray[i].x > canvas.width) {
                         blastArray.shift();
                     }
