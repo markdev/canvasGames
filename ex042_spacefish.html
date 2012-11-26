@@ -69,8 +69,27 @@
                 this.x = 0;
                 this.y = canvas.height/2 - this.h/2;
                 this.color = "white";
+                this.weapon = "dualLaser";
+                this.fire = function() {
+                    switch (this.weapon) {
+                        case "peaShooter":
+                            blastArray[blastArray.length] = new peaShooterBlast();
+                            break;
+                        case "dualLaser":
+                            blastArray[blastArray.length] = new dualLaser(20);
+                            blastArray[blastArray.length] = new dualLaser(-20);
+                            break;
+                        case "bouncyBalls":
+                            /* blastArray[blastArray.length] = new bouncyBall();
+                            */
+                    }
+                };
             }
 
+
+            /*
+            *   Enemies
+             */
             function bigBloater() {
                 this.w = 150;
                 this.h = 75;
@@ -233,6 +252,10 @@
                 }
             }
 
+
+            /*
+            *   Weapons
+            */
             function peaShooterBlast() {
                 this.w = 30;
                 this.h = 10;
@@ -242,6 +265,14 @@
                 this.velx = 25;
             }
 
+            function dualLaser(loc) {
+                this.w = 80;
+                this.h = 10;
+                this.y = hero.y + hero.h/2 - this.h/2 + loc;
+                this.x = hero.w;
+                this.color = "red";
+                this.velx = 25;
+            }
 
 
 
@@ -294,10 +325,7 @@
             *
             */
             function fireWeapon(weapon) {
-                // Peashooter
-                if (weapon == 1) {
-                    blastArray[blastArray.length] = new peaShooterBlast();
-                }
+              hero.fire();
             }
 
             function countdown() {
