@@ -46,7 +46,7 @@
             var maxTime = null;
             var orb = null;
             var orbArray = [];
-            var weaponOrbFrequency = 5; // on average, one orb will generate every weaponOrbFrequency seconds
+            var weaponOrbFrequency = 2; // on average, one orb will generate every weaponOrbFrequency seconds
 
 
             /*
@@ -55,7 +55,7 @@
             var levelData = [];
                 levelData[1] = [];
                 levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
-                levelData[1]['weapons'] = [];
+                levelData[1]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
                 levelData[2]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
@@ -88,6 +88,8 @@
                 this.y = canvas.height/2 - this.h/2;
                 this.color = "white";
                 this.weapon = "peaShooter";
+                this.weaponTimer = 0;
+                this.maxWeaponTimer = 300;
                 this.fire = function() {
                     switch (this.weapon) {
                         case "peaShooter":
@@ -103,6 +105,10 @@
                             blastArray[blastArray.length] = new bouncyBall(10);
                             break;
                     }
+                };
+                this.weaponUpdate = function(newWeapon) {
+                    this.weapon = newWeapon;
+                    this.weaponTimer = this.maxWeaponTimer;
                 };
             }
 
@@ -637,7 +643,17 @@
                             (hero.x < orbArray[i].x + orbArray[i].radius) &&
                             (hero.y + hero.h > orbArray[i].y) &&
                             (hero.y < orbArray[i].y + orbArray[i].radius)
-                       ) { hero.weapon = orbArray[i].weapon; }
+                       ) {
+                        hero.weaponUpdate(orbArray[i].weapon);
+                        //hero.weapon = orbArray[i].weapon;
+                    }
+                }
+
+                if (hero.weaponTimer > 0) {
+                    hero.weaponTimer--;
+                    if (hero.weaponTimer <= 0) {
+                        hero.weapon = "peaShooter";
+                    }
                 }
             }
 
@@ -685,6 +701,12 @@
                 for (var i = 1; i <= lives; i++) {
                     var dist = 900 + (70 * i);
                     bufferCanvasCtx.fillRect(dist, 15, hero.w, hero.h);
+                }
+
+                // Weapon Timer
+                if (hero.weaponTimer > 0) {
+                    bufferCanvasCtx.fillStyle = "blue";
+                    bufferCanvasCtx.fillRect(0, canvas.height-30, hero.weaponTimer, 30);
                 }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
