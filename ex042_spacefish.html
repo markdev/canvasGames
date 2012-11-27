@@ -486,9 +486,6 @@
                 // play the level
                 mode = "game";
 
-                //cast the orb temporarily
-                orb = new weaponOrb();
-
                 setTimeout(function() {
                     animInt = setInterval(animate, 30);
                     countInt = setInterval(countdown, 1000);
@@ -583,10 +580,6 @@
                     enemyArray[i].updatePos();
                 }
 
-                for (var i = 0; i < orbArray.length; i++) {
-                    orbArray[i].updatePos();
-                }
-
                 for (var i = 0; i < blastArray.length; i++) {
                     for (var j = 0; j < enemyArray.length; j++) {
                         if (
@@ -605,14 +598,15 @@
                             (hero.y < enemyArray[i].y + enemyArray[i].h)
                        ) { die(); break; }
                 }
-                if (orb) {
-                    orb.updatePos();
+
+                for (var i = 0; i < orbArray.length; i++) {
+                    orbArray[i].updatePos();
                     if (
-                            (hero.x + hero.w > orb.x) &&
-                            (hero.x < orb.x + orb.radius) &&
-                            (hero.y + hero.h > orb.y) &&
-                            (hero.y < orb.y + orb.radius)
-                       ) { hero.weapon = orb.weapon; }
+                            (hero.x + hero.w > orbArray[i].x) &&
+                            (hero.x < orbArray[i].x + orbArray[i].radius) &&
+                            (hero.y + hero.h > orbArray[i].y) &&
+                            (hero.y < orbArray[i].y + orbArray[i].radius)
+                       ) { hero.weapon = orbArray[i].weapon; }
                 }
             }
 
@@ -632,14 +626,6 @@
                 for (var i = 0; i < enemyArray.length; i++) {
                     bufferCanvasCtx.fillStyle = enemyArray[i].color;
                     bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
-                }
-
-                // Weapon Orb
-                if (orb) {
-                    bufferCanvasCtx.fillStyle = orb.color;
-                    bufferCanvasCtx.beginPath();
-                    bufferCanvasCtx.arc(orb.x, orb.y, orb.radius, 0, 2 * Math.PI);
-                    bufferCanvasCtx.fill();
                 }
 
                 for (var i = 0; i < orbArray.length; i++) {
