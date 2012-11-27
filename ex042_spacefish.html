@@ -46,19 +46,34 @@
             var maxTime = null;
             var orb = null;
             var orbArray = [];
+            var weaponOrbFrequency = 5; // on average, one orb will generate every weaponOrbFrequency seconds
 
 
             /*
             *   Level Data
             */
             var levelData = [];
-                levelData[1] = ["bigBloater", "bigBloater", "speedyBlue"];
-                levelData[2] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
-                levelData[3] = ["speedyBlue", "speedyBlue", "sinusoidSwimmer"];
-                levelData[4] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
-                levelData[5] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
-                levelData[6] = ["homingFish", "splitFishBig", "spitFireFish"];
-                levelData[7] = ["homingFish", "splitFishBig", "spitFireFish"];
+                levelData[1] = [];
+                levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
+                levelData[1]['weapons'] = [];
+                levelData[2] = [];
+                levelData[2]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
+                levelData[2]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[3] = [];
+                levelData[3]['enemies'] = ["speedyBlue", "speedyBlue", "sinusoidSwimmer"];
+                levelData[3]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[4] = [];
+                levelData[4]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
+                levelData[4]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[5] = [];
+                levelData[5]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
+                levelData[5]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[6] = [];
+                levelData[6]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
+                levelData[6]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[7] = [];
+                levelData[7]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
+                levelData[7]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
 
 
 
@@ -72,7 +87,7 @@
                 this.x = 0;
                 this.y = canvas.height/2 - this.h/2;
                 this.color = "white";
-                this.weapon = "bouncyBalls";
+                this.weapon = "peaShooter";
                 this.fire = function() {
                     switch (this.weapon) {
                         case "peaShooter":
@@ -91,12 +106,22 @@
                 };
             }
 
-            function weaponOrb() {
+            function weaponOrb(weapon) {
                 this.radius = 15;
                 this.x = canvas.width - 100;
                 this.y = Math.random() * canvas.height;
-                this.color = "red";
-                this.weapon = "dualLaser";
+                switch (weapon) {
+                    case "dualLaser":
+                        this.color = "red";
+                        break;
+                    case "peaShooter":
+                        this.color = "yellow";
+                        break;
+                    case "bouncyBalls":
+                        this.color = "blue";
+                        break;
+                }
+                this.weapon = weapon;
                 this.velx = -10;
                 this.updatePos = function() {
                     this.x += this.velx;
@@ -373,8 +398,8 @@
             }
 
             function addEnemy() {
-                var num = Math.floor(Math.random() * levelData[level].length);
-                    switch (levelData[level][num]) {
+                var num = Math.floor(Math.random() * levelData[level]['enemies'].length);
+                    switch (levelData[level]['enemies'][num]) {
                         case "bigBloater":
                             enemyArray[enemyArray.length] = new bigBloater();
                             break;
@@ -397,7 +422,13 @@
             }
 
             function addOrb() {
-                orbArray[orbArray.length] = new weaponOrb();
+                if (levelData[level]['weapons'].length > 0) {
+                    var num = Math.floor(Math.random() * levelData[level]['weapons'].length);
+                    var go = Math.ceil(Math.random() * weaponOrbFrequency);
+                    if (go == weaponOrbFrequency) {
+                        orbArray[orbArray.length] = new weaponOrb(levelData[level]['weapons'][num]);
+                    }
+                }
             }
 
             function kill(i, j) {
@@ -452,7 +483,7 @@
                 killCount = 0;
                 level = 0;
                 lives = 2;
-                maxTime = 10;
+                maxTime = 45;
 
 
                 if (mode == "start") {
