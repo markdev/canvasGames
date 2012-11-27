@@ -39,11 +39,13 @@
             var animInt = null;
             var countInt = null;
             var enemyInt = null;
+            var orbInt = null;
             var enemyArray = [];
             var killCount = null;
             var lives = null;
             var maxTime = null;
             var orb = null;
+            var orbArray = [];
 
 
             /*
@@ -394,6 +396,10 @@
                     }
             }
 
+            function addOrb() {
+                orbArray[orbArray.length] = new weaponOrb();
+            }
+
             function kill(i, j) {
                 for (i; i < blastArray.length - 1; i++) {
                     blastArray[i] = blastArray[i+1];
@@ -468,8 +474,10 @@
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
                 if (enemyInt) { window.clearInterval(enemyInt); }
+                if (orbInt) { window.clearInterval(orbInt); }
                 blastArray = [];
                 enemyArray = [];
+                orbArray = [];
 
                 // level splash screen
                 mode = "levelSplash";
@@ -485,6 +493,7 @@
                     animInt = setInterval(animate, 30);
                     countInt = setInterval(countdown, 1000);
                     enemyInt = setInterval(addEnemy, 1000);
+                    orbInt = setInterval(addOrb, 1000);
                 }, 1000);
             }
 
@@ -574,6 +583,10 @@
                     enemyArray[i].updatePos();
                 }
 
+                for (var i = 0; i < orbArray.length; i++) {
+                    orbArray[i].updatePos();
+                }
+
                 for (var i = 0; i < blastArray.length; i++) {
                     for (var j = 0; j < enemyArray.length; j++) {
                         if (
@@ -622,10 +635,19 @@
                 }
 
                 // Weapon Orb
-                bufferCanvasCtx.fillStyle = orb.color;
-                bufferCanvasCtx.beginPath();
-                bufferCanvasCtx.arc(orb.x, orb.y, orb.radius, 0, 2 * Math.PI);
-                bufferCanvasCtx.fill();
+                if (orb) {
+                    bufferCanvasCtx.fillStyle = orb.color;
+                    bufferCanvasCtx.beginPath();
+                    bufferCanvasCtx.arc(orb.x, orb.y, orb.radius, 0, 2 * Math.PI);
+                    bufferCanvasCtx.fill();
+                }
+
+                for (var i = 0; i < orbArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = orbArray[i].color;
+                    bufferCanvasCtx.beginPath();
+                    bufferCanvasCtx.arc(orbArray[i].x, orbArray[i].y, orbArray[i].radius, 0, 2 * Math.PI);
+                    bufferCanvasCtx.fill();
+                }
 
                 // Timer
                 bufferCanvasCtx.fillStyle = "#DDD";
