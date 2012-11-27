@@ -706,7 +706,7 @@
                 // Weapon Timer
                 if (hero.weaponTimer > 0) {
                     bufferCanvasCtx.fillStyle = "blue";
-                    bufferCanvasCtx.fillRect(0, canvas.height-30, hero.weaponTimer, 30);
+                    bufferCanvasCtx.fillRect(canvas.width/2, canvas.height-30, (hero.weaponTimer * (canvas.width/hero.maxWeaponTimer))/2, 30);
                 }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
