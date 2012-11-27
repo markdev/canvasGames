@@ -109,6 +109,17 @@
                 this.weaponUpdate = function(newWeapon) {
                     this.weapon = newWeapon;
                     this.weaponTimer = this.maxWeaponTimer;
+                    switch (newWeapon) {
+                        case "dualLaser":
+                            hero.color = "red";
+                            break;
+                        case "peaShooter":
+                            hero.color = "yellow";
+                            break;
+                        case "bouncyBalls":
+                            hero.color = "blue";
+                            break;
+                    }
                 };
             }
 
@@ -653,6 +664,7 @@
                     hero.weaponTimer--;
                     if (hero.weaponTimer <= 0) {
                         hero.weapon = "peaShooter";
+                        hero.color = "yellow";
                     }
                 }
             }
@@ -662,7 +674,7 @@
 
                 blank();
 
-                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.fillStyle = hero.color;
                 bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
 
                 for (var i = 0; i < blastArray.length; i++) {
@@ -705,8 +717,12 @@
 
                 // Weapon Timer
                 if (hero.weaponTimer > 0) {
-                    bufferCanvasCtx.fillStyle = "blue";
+                    bufferCanvasCtx.fillStyle = hero.color;
                     bufferCanvasCtx.fillRect(((hero.maxWeaponTimer - hero.weaponTimer)* (canvas.width/hero.maxWeaponTimer))/2, canvas.height-30, (hero.weaponTimer * (canvas.width/hero.maxWeaponTimer)), 30);
+                    bufferCanvasCtx.fillStyle = "white";
+                    bufferCanvasCtx.font = "20pt Arial";
+                    bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
+
                 }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
