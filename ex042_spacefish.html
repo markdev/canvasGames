@@ -40,6 +40,8 @@
             var countInt = null;
             var enemyInt = null;
             var orbInt = null;
+            var imgShiftInt = null;
+            var imgShiftVal = 0;
             var enemyArray = [];
             var killCount = null;
             var lives = null;
@@ -156,6 +158,8 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "green";
                 this.velx = -25;
+                this.imgSrcA = "img/bigBloaterA.png";
+                this.imgSrcB = "img/bigBloaterB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -171,6 +175,8 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "blue";
                 this.velx = -35;
+                this.imgSrcA = "img/bigBloaterA.png";
+                this.imgSrcB = "img/bigBloaterB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -448,6 +454,10 @@
                 }
             }
 
+            function shiftImgSrc() {
+                imgShiftVal = (imgShiftVal == 0)? 1 : 0;
+            }
+
             function kill(i, j) {
                 for (i; i < blastArray.length - 1; i++) {
                     blastArray[i] = blastArray[i+1];
@@ -523,6 +533,7 @@
                 if (countInt) { window.clearInterval(countInt); }
                 if (enemyInt) { window.clearInterval(enemyInt); }
                 if (orbInt) { window.clearInterval(orbInt); }
+                if (imgShiftInt) { window.clearInterval(imgShiftInt); }
                 blastArray = [];
                 enemyArray = [];
                 orbArray = [];
@@ -539,6 +550,7 @@
                     countInt = setInterval(countdown, 1000);
                     enemyInt = setInterval(addEnemy, 1000);
                     orbInt = setInterval(addOrb, 1000);
+                    imgShiftInt = setInterval(shiftImgSrc, 1000);
                 }, 1000);
             }
 
@@ -689,7 +701,7 @@
 
                 for (var i = 0; i < enemyArray.length; i++) {
                     var img = new Image();
-                    img.src = 'img/bigBloater.png';
+                    img.src = (imgShiftVal == 0)? enemyArray[i].imgSrcA : enemyArray[i].imgSrcB;
                     bufferCanvasCtx.drawImage(img, enemyArray[i].x, enemyArray[i].y);
                  }
 
