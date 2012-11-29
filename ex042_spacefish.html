@@ -682,10 +682,16 @@
                     bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
                 }
 
-                for (var i = 0; i < enemyArray.length; i++) {
+                /*for (var i = 0; i < enemyArray.length; i++) {
                     bufferCanvasCtx.fillStyle = enemyArray[i].color;
                     bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
-                }
+                }*/
+
+                for (var i = 0; i < enemyArray.length; i++) {
+                    var img = new Image();
+                    img.src = 'img/bigBloater.png';
+                    bufferCanvasCtx.drawImage(img, enemyArray[i].x, enemyArray[i].y);
+                 }
 
                 for (var i = 0; i < orbArray.length; i++) {
                     bufferCanvasCtx.fillStyle = orbArray[i].color;
