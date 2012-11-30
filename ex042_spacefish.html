@@ -84,14 +84,16 @@
             *
             */
             function spaceShip() {
-                this.w = 50;
-                this.h = this.w;
+                this.w = 120;
+                this.h = 60;
                 this.x = 0;
                 this.y = canvas.height/2 - this.h/2;
                 this.color = "white";
                 this.weapon = "peaShooter";
                 this.weaponTimer = 0;
                 this.maxWeaponTimer = 300;
+                this.imgSrcA = "img/spacefish/spaceShipA.png";
+                this.imgSrcB = "img/spacefish/spaceShipB.png";
                 this.fire = function() {
                     switch (this.weapon) {
                         case "peaShooter":
@@ -702,19 +704,18 @@
 
                 blank();
 
-                bufferCanvasCtx.fillStyle = hero.color;
-                bufferCanvasCtx.fillRect(hero.x, hero.y, hero.w, hero.h);
+                // Hero
+                var heroImg = new Image();
+                heroImg.src = (imgShiftVal == 0)? hero.imgSrcA : hero.imgSrcB;
+                bufferCanvasCtx.drawImage(heroImg, hero.x, hero.y);
 
+                // Hero's blasts
                 for (var i = 0; i < blastArray.length; i++) {
                     bufferCanvasCtx.fillStyle = blastArray[i].color;
                     bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
                 }
 
-                /*for (var i = 0; i < enemyArray.length; i++) {
-                    bufferCanvasCtx.fillStyle = enemyArray[i].color;
-                    bufferCanvasCtx.fillRect(enemyArray[i].x, enemyArray[i].y, enemyArray[i].w, enemyArray[i].h);
-                }*/
-
+                // Enemies
                 for (var i = 0; i < enemyArray.length; i++) {
                     var img = new Image();
                     img.src = (imgShiftVal == 0)? enemyArray[i].imgSrcA : enemyArray[i].imgSrcB;
@@ -744,10 +745,10 @@
                 bufferCanvasCtx.fillText(killText, 250, 45);
                 // Lives
                 bufferCanvasCtx.fillStyle = "#DDD";
-                for (var i = 1; i <= lives; i++) {
-                    var dist = 900 + (70 * i);
-                    bufferCanvasCtx.fillRect(dist, 15, hero.w, hero.h);
-                }
+                bufferCanvasCtx.drawImage(heroImg, 900, 15);
+                bufferCanvasCtx.font = "30pt Arial";
+                var livesText = " x " + lives;
+                bufferCanvasCtx.fillText(livesText, 1025, 57);
 
                 // Weapon Timer
                 if (hero.weaponTimer > 0) {
