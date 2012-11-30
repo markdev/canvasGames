@@ -49,6 +49,7 @@
             var orb = null;
             var orbArray = [];
             var weaponOrbFrequency = 2; // on average, one orb will generate every weaponOrbFrequency seconds
+            var xBackgroundShift = 0;
 
 
             /*
@@ -555,6 +556,7 @@
                 blastArray = [];
                 enemyArray = [];
                 orbArray = [];
+                xBackgroundShift = 0;
 
                 // level splash screen
                 mode = "levelSplash";
@@ -638,8 +640,12 @@
              *
             */
             function blank() {
-                bufferCanvasCtx.fillStyle = "#000";
+                /* bufferCanvasCtx.fillStyle = "#000";
                 bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+                */
+                var backgroundImg = new Image();
+                backgroundImg.src = "img/spacefish/outer-space-stars.jpg";
+                bufferCanvasCtx.drawImage(backgroundImg, xBackgroundShift, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
             }
 
             function animate() {
@@ -697,6 +703,8 @@
                         hero.color = "yellow";
                     }
                 }
+
+                xBackgroundShift += .25;
             }
 
             function Draw() {
