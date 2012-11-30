@@ -56,7 +56,7 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
+                levelData[1]['enemies'] = ["homingFish"];
                 levelData[1]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
@@ -186,12 +186,14 @@
             }
 
             function sinusoidSwimmer() {
-                this.w = 50;
-                this.h = 100;
+                this.w = 200;
+                this.h = 300;
                 this.x = canvas.width;
-                this.y = Math.random() * canvas.height - this.h;
+                this.y = (Math.random() * canvas.height/2) + 100;
                 this.color = "yellow";
                 this.velx = -25;
+                this.imgSrcA = "img/sinusoidSwimmerA.png";
+                this.imgSrcB = "img/sinusoidSwimmerB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var sin = Math.sin(this.x * 2.5) * 80;
@@ -203,12 +205,14 @@
             }
 
             function homingFish() {
-                this.w = 80;
-                this.h = 50;
+                this.w = 230;
+                this.h = 115;
                 this.x = canvas.width;
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "red";
                 this.velx = -35;
+                this.imgSrcA = "img/homingFishA.png";
+                this.imgSrcB = "img/homingFishB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var home = ((this.y + this.h/2) > hero.y)? -10 : 10;
