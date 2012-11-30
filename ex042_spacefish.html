@@ -56,7 +56,7 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["homingFish"];
+                levelData[1]['enemies'] = ["splitFishBig"];
                 levelData[1]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
@@ -224,30 +224,34 @@
             }
 
             function splitFishBig() {
-                this.w = 120;
-                this.h = 100;
+                this.w = 250;
+                this.h = 250;
                 this.x = canvas.width;
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "purple";
                 this.velx = -15;
+                this.imgSrcA = "img/splitFishBigA.png";
+                this.imgSrcB = "img/splitFishBigB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
                 this.getHitBy = function(i, j) {
-                    enemyArray[enemyArray.length] = new splitFishHigh(this.x, this.y);
                     enemyArray[enemyArray.length] = new splitFishMid(this.x, this.y);
+                    enemyArray[enemyArray.length] = new splitFishHigh(this.x, this.y);
                     enemyArray[enemyArray.length] = new splitFishLow(this.x, this.y);
                     kill(i, j);
                 }
             }
 
             function splitFishHigh(x, y) {
-                this.w = 50;
-                this.h = 50;
+                this.w = 125;
+                this.h = 75;
                 this.x = x;
                 this.y = y + 50;
                 this.color = "purple";
-                this.velx = -15;
+                this.velx = -25;
+                this.imgSrcA = "img/splitFishSmallA.png";
+                this.imgSrcB = "img/splitFishSmallB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y -= 3;
@@ -258,12 +262,14 @@
             }
 
             function splitFishMid(x, y) {
-                this.w = 50;
-                this.h = 50;
+                this.w = 125;
+                this.h = 75;
                 this.x = x;
                 this.y = y + 50;
                 this.color = "purple";
-                this.velx = -15;
+                this.velx = -25;
+                this.imgSrcA = "img/splitFishSmallA.png";
+                this.imgSrcB = "img/splitFishSmallB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -273,12 +279,14 @@
             }
 
             function splitFishLow(x, y) {
-                this.w = 50;
-                this.h = 50;
+                this.w = 125;
+                this.h = 75;
                 this.x = x;
                 this.y = y + 50;
                 this.color = "purple";
-                this.velx = -15;
+                this.velx = -25;
+                this.imgSrcA = "img/splitFishSmallA.png";
+                this.imgSrcB = "img/splitFishSmallB.png";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y += 3;
