@@ -59,24 +59,33 @@
                 levelData[1] = [];
                 levelData[1]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer", "homingFish", "splitFishBig", "spitFireFish"];
                 levelData[1]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+
+                /* levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-012.jpg"; */
+                levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
                 levelData[2]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
                 levelData[3] = [];
                 levelData[3]['enemies'] = ["speedyBlue", "speedyBlue", "sinusoidSwimmer"];
                 levelData[3]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[3]['background'] = "img/spacefish/blue-outer-space-stars-planets-nebulae-1680x1050-hd-wallpaper.jpg";
                 levelData[4] = [];
                 levelData[4]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
                 levelData[4]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[4]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-010.jpg";
                 levelData[5] = [];
                 levelData[5]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
                 levelData[5]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[5]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-004.jpg";
                 levelData[6] = [];
                 levelData[6]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
                 levelData[6]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[6]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-008.jpg";
                 levelData[7] = [];
                 levelData[7]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
                 levelData[7]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[7]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-009.jpg";
 
 
 
@@ -529,7 +538,7 @@
                 killCount = 0;
                 level = 0;
                 lives = 2;
-                maxTime = 45;
+                maxTime = 10;
 
 
                 if (mode == "start") {
@@ -634,18 +643,19 @@
 
 
 
-
             /*
              *  Updating and Rendering
              *
             */
             function blank() {
-                /* bufferCanvasCtx.fillStyle = "#000";
-                bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
-                */
-                var backgroundImg = new Image();
-                backgroundImg.src = "img/spacefish/outer-space-stars.jpg";
-                bufferCanvasCtx.drawImage(backgroundImg, xBackgroundShift, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                if (level > 0) {
+                    var backgroundImg = new Image();
+                    backgroundImg.src = levelData[level]['background'];
+                    bufferCanvasCtx.drawImage(backgroundImg, xBackgroundShift, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                } else {
+                    bufferCanvasCtx.fillStyle = "#000";
+                    bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+                }
             }
 
             function animate() {
