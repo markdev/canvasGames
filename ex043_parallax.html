@@ -17,53 +17,27 @@
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
         <script>
 
+            // The all-important beget function from Javascript: the Good Parts
+            if (typeof Object.beget !== 'function') {
+                Object.beget = function (o) {
+                    var F = function () {};
+                    F.prototype = o;
+                    return new F();
+                };
+            }
+
             //Declare all of your variables here
             var canvas = null;
             var ctx = null;
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
-            var block = new function() {
-                this.x = 100;
-                this.y = 100;
-                this.z = 100;
-            };
+
             var dimensionalSection = function(z) {
                 var indent = getIndent(z);
                 this.x = indent;
                 this.y = this.x;
                 this.w = canvas.width - (2 * this.x);
                 this.h = this.w;
-            }
-
-            function getIndent(z) { // returns the distance of x or y's indent from the point of upper left corner given z;
-                var indent = 0;
-                for (var i = 0; i < z; i++ ) {
-                    indent += (canvas.width/2 - indent) * .10;
-                }
-                return indent;
-            }
-
-            function getIncrements(z, xy) {
-                var size = block.w;
-                for (var i = 0; i < z; i++) {
-                    size -= size * .1;
-                }
-                var totalSize = size * xy;
-                return totalSize;
-            }
-
-            function getSize(z) { // returns the adjusted size of the block depending on z;
-                var size = 100;
-                for (var i = 0; i < z; i++ ) {
-                    size -= size * .1;
-                }
-                return size;
-            }
-
-            function getDist(z, xy) {
-                var indent = getSize(z);
-                var dist = indent * xy;
-                return dist;
             }
 
             var block = new function() {
@@ -95,6 +69,36 @@
                 }
             };
 
+            var backBlock = Object.beget(block);
+            backBlock.color = "rgba(0, 64, 0, 255)";
+            backBlock.z = block.z + 1;
+
+
+            function getIndent(z) { // returns the distance of x or y's indent from the point of upper left corner given z;
+                var indent = 0;
+                for (var i = 0; i < z; i++ ) {
+                    indent += (canvas.width/2 - indent) * .10;
+                }
+                return indent;
+            }
+
+            function getIncrements(z, xy) {
+                var size = block.w;
+                for (var i = 0; i < z; i++) {
+                    size -= size * .1;
+                }
+                var totalSize = size * xy;
+                return totalSize;
+            }
+
+            function getSize(z) { // returns the adjusted size of the block depending on z;
+                var size = 100;
+                for (var i = 0; i < z; i++ ) {
+                    size -= size * .1;
+                }
+                return size;
+            }
+
             //main() gets called onload body
             function main() {
                 canvas = document.getElementById("canvas");
@@ -124,26 +128,32 @@
                     case 81: // Q, in
                         if (block.z < 50) { block.z += 1; }
                         if (block.z > 50) { block.z = 50; }
+                        backBlock.z = block.z + 1;
                         break;
                     case 65: // A, out
                         if (block.z > 0) { block.z -= 1; }
                         if (block.z < 0) { block.z = 0; }
+                        backBlock.z = block.z + 1;
                         break;
                     case 37: // left
                         if (block.x > 0) { block.x -= 100; }
                         if (block.x < 0) { block.x = 0; }
+                        backBlock.x = block.x;
                         break;
                     case 38: // up
                         if (block.y > 0) { block.y -= 100; }
                         if (block.y < 0) { block.y = 0; }
+                        backBlock.y = block.y;
                         break;
                     case 39: // right
                         if (block.x < canvas.width - block.w) { block.x += 100; }
                         if (block.x > canvas.width - block.w) { block.x = canvas.width; }
+                        backBlock.x = block.x;
                         break;
                     case 40: // down
                         if (block.y < canvas.height - block.h) { block.y += 100; }
                         if (block.y > canvas.height - block.h) { block.y = canvas.height - block.h; }
+                        backBlock.y = block.y;
                         break;
                 }
             }
@@ -178,8 +188,9 @@
                 }
 
                 //draw the block
+                bufferCanvasCtx.fillStyle = backBlock.color;
+                bufferCanvasCtx.fillRect(backBlock.rendx(), backBlock.rendy(), backBlock.rendw(), backBlock.rendh());
                 bufferCanvasCtx.fillStyle = block.color;
-                //bufferCanvasCtx.fillRect(block.x, block.y, block.w, block.h);
                 bufferCanvasCtx.fillRect(block.rendx(), block.rendy(), block.rendw(), block.rendh());
 
                 // copy the entire rendered image from the bugger canvas to the visible one
