@@ -43,9 +43,14 @@
             var imgShiftInt = null;
             var imgShiftVal = 0;
             var enemyArray = [];
-            var killCount = null;
+                // Score variables
+            var score = null;
+            var scoreArray = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+            var scoreArrayPos = 0;
+            var scoreDisplayArray = [];
+            var extraLifeTextPos = 0;
+
             var lives = null;
-            //var maxTime = null;
             var orb = null;
             var orbArray = [];
             var weaponOrbFrequency = 2; // on average, one orb will generate every weaponOrbFrequency seconds
@@ -185,6 +190,7 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "green";
                 this.velx = -25;
+                this.value = 20;
                 this.imgSrcA = "img/spacefish/bigBloaterA.png";
                 this.imgSrcB = "img/spacefish/bigBloaterB.png";
                 this.updatePos = function() {
@@ -202,6 +208,7 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "blue";
                 this.velx = -35;
+                this.value = 30;
                 this.imgSrcA = "img/spacefish/speedyBlueA.png";
                 this.imgSrcB = "img/spacefish/speedyBlueB.png";
                 this.updatePos = function() {
@@ -219,6 +226,7 @@
                 this.y = (Math.random() * canvas.height/2) + 100;
                 this.color = "yellow";
                 this.velx = -25;
+                this.value = 40;
                 this.imgSrcA = "img/spacefish/sinusoidSwimmerA.png";
                 this.imgSrcB = "img/spacefish/sinusoidSwimmerB.png";
                 this.updatePos = function() {
@@ -238,6 +246,7 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "red";
                 this.velx = -35;
+                this.value = 50;
                 this.imgSrcA = "img/spacefish/homingFishA.png";
                 this.imgSrcB = "img/spacefish/homingFishB.png";
                 this.updatePos = function() {
@@ -257,6 +266,7 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "purple";
                 this.velx = -15;
+                this.value = 60;
                 this.imgSrcA = "img/spacefish/splitFishBigA.png";
                 this.imgSrcB = "img/spacefish/splitFishBigB.png";
                 this.updatePos = function() {
@@ -277,6 +287,7 @@
                 this.y = y + 50;
                 this.color = "purple";
                 this.velx = -25;
+                this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
                 this.updatePos = function() {
@@ -295,6 +306,7 @@
                 this.y = y + 50;
                 this.color = "purple";
                 this.velx = -25;
+                this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
                 this.updatePos = function() {
@@ -312,6 +324,7 @@
                 this.y = y + 50;
                 this.color = "purple";
                 this.velx = -25;
+                this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
                 this.updatePos = function() {
@@ -330,6 +343,7 @@
                 this.y = Math.random() * canvas.height - this.h;
                 this.color = "pink";
                 this.velx = -15;
+                this.value = 80;
                 this.imgSrcA = "img/spacefish/spitFireFishA.png";
                 this.imgSrcB = "img/spacefish/spitFireFishB.png";
                 this.updatePos = function() {
@@ -424,7 +438,7 @@
                     clearInterval(endingTimer);
                     mode = "start";
                     lives = 2;
-                    killCount = 0;
+                    score = 0;
                     initialize();
                 }
             }
@@ -506,11 +520,28 @@
                     blastArray[i] = blastArray[i+1];
                 }
                 blastArray.pop();
+
+                // now do the score and extra life thang
+                score += enemyArray[j].value;
+                if (score >= scoreArray[scoreArrayPos]) {
+                    lives++;
+                    extraLifeTextPos = 1;
+                    scoreArrayPos++;
+                }
+                scoreDisplayArray[scoreDisplayArray.length] = {
+                    x : enemyArray[j].x + (enemyArray[j].w/2),
+                    y : enemyArray[j].y + (enemyArray[j].h/2),
+                    value : enemyArray[j].value,
+                    pos : 0,
+                    alpha : 1
+                };
+
+
+
                 for (j; j < enemyArray.length - 1; j++) {
                     enemyArray[j] = enemyArray[j+1];
                 }
                 enemyArray.pop();
-                killCount += 1;
             }
 
             function die() {
@@ -550,7 +581,7 @@
                 bufferCanvasCtx.canvas.height = ctx.canvas.height;
 
                 //initialize game variables
-                killCount = 0;
+                score = 0;
                 level = 0;
                 lives = 2;
                // maxTime = 10;
@@ -580,6 +611,7 @@
                 blastArray = [];
                 enemyArray = [];
                 orbArray = [];
+                scoreDisplayArray = [];
                 xBackgroundShift = 0;
 
                 // level splash screen
@@ -699,9 +731,10 @@
                                 ) { enemyArray[j].getHitBy(i, j); }
                     }
                 }
+                // cycle through the enemyArray and see if the hero gets hit
                 for (var i = 0; i < enemyArray.length; i++) {
                     if (
-                            (hero.x + hero.w > enemyArray[i].x) &&
+                            (hero.x + (hero.w/2) > enemyArray[i].x) &&
                             (hero.x < enemyArray[i].x + enemyArray[i].w) &&
                             (hero.y + hero.h > enemyArray[i].y) &&
                             (hero.y < enemyArray[i].y + enemyArray[i].h)
@@ -726,6 +759,19 @@
                     if (hero.weaponTimer <= 0) {
                         hero.weapon = "peaShooter";
                         hero.color = "yellow";
+                    }
+                }
+
+               for (var i = 0; i < scoreDisplayArray.length; i++) {
+                    scoreDisplayArray[i].alpha -= .04;
+                    scoreDisplayArray[i].pos += 10;
+                    if (scoreDisplayArray[i].pos > 200) { scoreDisplayArray.shift(); }
+                }
+
+                if (extraLifeTextPos > 0) {
+                    extraLifeTextPos += 5;
+                    if (extraLifeTextPos > 100) {
+                        extraLifeTextPos = 0;
                     }
                 }
 
@@ -771,17 +817,11 @@
                 bufferCanvasCtx.font = "20pt Arial";
                 var levelText = "Level " + level;
                 bufferCanvasCtx.fillText(levelText, 10, 45);
-                // Kill Count
+                // Score Count
                 bufferCanvasCtx.fillStyle = "#DDD";
                 bufferCanvasCtx.font = "20pt Arial";
-                var killText = "Kills: " + killCount;
-                bufferCanvasCtx.fillText(killText, 250, 45);
-                // Lives
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.drawImage(heroImg, 900, 15);
-                bufferCanvasCtx.font = "30pt Arial";
-                var livesText = " x " + lives;
-                bufferCanvasCtx.fillText(livesText, 1025, 57);
+                var scoreText = "Score: " + score;
+                bufferCanvasCtx.fillText(scoreText, 250, 45);
 
                 // Weapon Timer
                 if (hero.weaponTimer > 0) {
@@ -792,6 +832,26 @@
                     bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
 
                 }
+
+                // Dynamic Score Display
+                bufferCanvasCtx.font = "20pt Arial";
+                for (var i = 0; i < scoreDisplayArray.length; i++) {
+                    bufferCanvasCtx.fillStyle = "rgba(255, 255, 255, " + scoreDisplayArray[i].alpha + ")";
+                    bufferCanvasCtx.fillText(scoreDisplayArray[i].value, scoreDisplayArray[i].x, scoreDisplayArray[i].y - scoreDisplayArray[i].pos);
+                }
+
+                // Extra Life
+                if (extraLifeTextPos > 0) {
+                    bufferCanvasCtx.fillStyle = "#DDD";
+                    bufferCanvasCtx.font = "30pt Arial";
+                    bufferCanvasCtx.fillText("EXTRA LIFE!", 900, 160-extraLifeTextPos);
+                }
+                // Lives
+                bufferCanvasCtx.fillStyle = (extraLifeTextPos > 0)? "#FFF" : "#DDD";
+                bufferCanvasCtx.drawImage(heroImg, 900, 15);
+                bufferCanvasCtx.font = (extraLifeTextPos > 0)? "35pt Arial" : "30pt Arial";
+                var livesText = " x " + lives;
+                bufferCanvasCtx.fillText(livesText, 1025, 57);
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
