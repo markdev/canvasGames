@@ -73,6 +73,26 @@
                 this.w = 100;
                 this.h = this.w;
                 this.color = "green";
+                this.rendx = function() {
+                    var x;
+                    x = getIndent(this.z) + ((this.x/100) * (this.rendw(this.z)));
+                    return x;
+                }
+                this.rendy = function() {
+                    var y;
+                    y = getIndent(this.z) + ((this.y/100) * (this.rendh(this.z)));
+                    return y;
+                }
+                this.rendw = function () {
+                    var w;
+                    w = getSize(this.z);
+                    return w;
+                }
+                this.rendh = function () {
+                    var h;
+                    h = getSize(this.z);
+                    return h;
+                }
             };
 
             //main() gets called onload body
@@ -102,8 +122,8 @@
                 switch (keyCode) {
 
                     case 81: // Q, in
-                        if (block.z < 10) { block.z += 1; }
-                        if (block.z > 10) { block.z = 10; }
+                        if (block.z < 50) { block.z += 1; }
+                        if (block.z > 50) { block.z = 50; }
                         break;
                     case 65: // A, out
                         if (block.z > 0) { block.z -= 1; }
@@ -159,7 +179,8 @@
 
                 //draw the block
                 bufferCanvasCtx.fillStyle = block.color;
-                bufferCanvasCtx.fillRect(block.x, block.y, block.w, block.h);
+                //bufferCanvasCtx.fillRect(block.x, block.y, block.w, block.h);
+                bufferCanvasCtx.fillRect(block.rendx(), block.rendy(), block.rendw(), block.rendh());
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
