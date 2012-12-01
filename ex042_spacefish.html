@@ -45,7 +45,7 @@
             var enemyArray = [];
             var killCount = null;
             var lives = null;
-            var maxTime = null;
+            //var maxTime = null;
             var orb = null;
             var orbArray = [];
             var weaponOrbFrequency = 2; // on average, one orb will generate every weaponOrbFrequency seconds
@@ -57,35 +57,50 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer", "homingFish", "splitFishBig", "spitFireFish"];
-                levelData[1]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
-
-                /* levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-012.jpg"; */
+                levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
+                levelData[1]['weapons'] = [];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
+                levelData[1]['config'] = { timer : 12, genrate : 900 };
                 levelData[2] = [];
-                levelData[2]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
-                levelData[2]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
+                levelData[2]['weapons'] = ["dualLaser"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
+                levelData[2]['config'] = { timer : 15, genrate : 800 };
                 levelData[3] = [];
-                levelData[3]['enemies'] = ["speedyBlue", "speedyBlue", "sinusoidSwimmer"];
-                levelData[3]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[3]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
+                levelData[3]['weapons'] = ["dualLaser"];
                 levelData[3]['background'] = "img/spacefish/blue-outer-space-stars-planets-nebulae-1680x1050-hd-wallpaper.jpg";
+                levelData[3]['config'] = { timer : 18, genrate : 700 };
                 levelData[4] = [];
                 levelData[4]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
-                levelData[4]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[4]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[4]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-010.jpg";
+                levelData[4]['config'] = { timer : 21, genrate : 600 };
                 levelData[5] = [];
-                levelData[5]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
-                levelData[5]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[5]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
+                levelData[5]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[5]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-004.jpg";
+                levelData[5]['config'] = { timer : 24, genrate : 500 };
                 levelData[6] = [];
-                levelData[6]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
-                levelData[6]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[6]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
+                levelData[6]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[6]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-008.jpg";
+                levelData[6]['config'] = { timer : 27, genrate : 400 };
                 levelData[7] = [];
-                levelData[7]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
-                levelData[7]['weapons'] = ["peaShooter", "dualLaser", "bouncyBalls"];
+                levelData[7]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
+                levelData[7]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[7]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-009.jpg";
+                levelData[7]['config'] = { timer : 30, genrate : 300 };
+                levelData[8] = [];
+                levelData[8]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
+                levelData[8]['weapons'] = ["dualLaser", "bouncyBalls"];
+                levelData[8]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
+                levelData[8]['config'] = { timer : 33, genrate : 250 };
+                levelData[9] = [];
+                levelData[9]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer", "homingFish", "splitFishBig", "spitFireFish"];
+                levelData[9]['weapons'] = ["dualLaser", "bouncyBalls"];
+                levelData[9]['background'] = "img/spacefish/Outer Space Wallpapers/Outer-Space-Artwork.jpg";
+                levelData[9]['config'] = { timer : 36, genrate : 220 };
 
 
 
@@ -538,7 +553,7 @@
                 killCount = 0;
                 level = 0;
                 lives = 2;
-                maxTime = 10;
+               // maxTime = 10;
 
 
                 if (mode == "start") {
@@ -554,7 +569,7 @@
 
             function playLevel() {
                 hero = new spaceShip();
-                timer = maxTime;
+                timer = levelData[level]['config'].timer;
 
                 // clear compound variables
                 if (animInt) { window.clearInterval(animInt); }
@@ -577,7 +592,7 @@
                 setTimeout(function() {
                     animInt = setInterval(animate, 30);
                     countInt = setInterval(countdown, 1000);
-                    enemyInt = setInterval(addEnemy, 1000);
+                    enemyInt = setInterval(addEnemy, levelData[level]['config'].genrate);
                     orbInt = setInterval(addOrb, 1000);
                     imgShiftInt = setInterval(shiftImgSrc, 500);
                 }, 1000);
@@ -799,7 +814,9 @@
 
         <br/><br/>
 
-        <input id="sin" type="text" size="3"></input>
+        <audio controls="controls">
+            <source src="assets/spacefish/SalmonDance.m4a" type="audio/mpeg">
+        </audio>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
