@@ -76,9 +76,9 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
-                //levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[1]['background'] = "img/spacefish/darkBack.png";
+                levelData[1]['enemies'] = ["bigBloater", "spitFireFish"];
+                levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
+                //levelData[1]['background'] = "img/spacefish/darkBack.png";
                 levelData[1]['config'] = { timer : 60, genrate : 400, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
@@ -172,6 +172,7 @@
                             break;
                         case "defense":
                             this.defense = newWeapon;
+                            this.w = 145;
                             this.defenseTimer = foo.timer;
                             this.maxDefenseTimer = foo.timer;
                             break;
@@ -318,7 +319,7 @@
                 this.value = 60;
                 this.imgSrcA = "img/spacefish/splitFishBigA.png";
                 this.imgSrcB = "img/spacefish/splitFishBigB.png";
-                this.itemDrop = "bouncyBalls";
+                this.itemDrop = "";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -340,7 +341,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
-                this.itemDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBall";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y -= 3;
@@ -360,7 +361,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
-                this.itemDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBall";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -379,7 +380,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
-                this.itemDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBall";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y += 3;
@@ -399,7 +400,7 @@
                 this.value = 80;
                 this.imgSrcA = "img/spacefish/spitFireFishA.png";
                 this.imgSrcB = "img/spacefish/spitFireFishB.png";
-                this.itemDrop = "bouncyBalls";
+                this.itemDrop = "shield";
                 this.updatePos = function() {
                     this.x += this.velx;
                     if ((this.x < 900 && this.x > 875) || (this.x < 400 && this.x > 375)) {
@@ -514,7 +515,7 @@
                 this.y = hero.y;
                 this.x = hero.x;
                 this.color = "rgba(0, 255, 255, .25)";
-                this.timer = 100;
+                this.timer = 500;
                 this.updatePos = function() {
                     // it don't go nowhere!!!
                 };
@@ -879,6 +880,7 @@
                     hero.defenseTimer--;
                     if (hero.defenseTimer <= 0) {
                         hero.defense = "";
+                        hero.w = 120;
                         hero.color = "yellow";
                     }
                 }
