@@ -76,7 +76,7 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["crabCakes"];
+                levelData[1]['enemies'] = ["spitFireFish"];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
                 //levelData[1]['background'] = "img/spacefish/darkBack.png";
                 levelData[1]['config'] = { timer : 60, genrate : 2000, droprate : 1 };
@@ -161,9 +161,9 @@
                         case "homingMissile":
                             blastArray[blastArray.length] = new homingMissile();
                             break;
-                        case "drill":
+                        /* case "drill":
                             blastArray[blastArray.length] = new drill();
-                            break;
+                            break; */
                     }
                 };
                 this.itemUpdate = function(newWeapon) {
@@ -874,27 +874,70 @@
 
 
 
+
+
             /*
-             *  Updating and Rendering
-             *
-            */
-            function blank() {
-                if (level > 0) {
-                    var backgroundImg = new Image();
-                    backgroundImg.src = levelData[level]['background'];
-                    bufferCanvasCtx.drawImage(backgroundImg, xBackgroundShift, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-                } else {
-                    bufferCanvasCtx.fillStyle = "#000";
-                    bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
-                }
-            }
+                *
+                  * GAME ANIMATION
+                *
+             */
+
+
+
+
 
             function animate() {
                 Update();
-                Draw();
+                Render();
             }
 
             function Update() {
+                updateBlastArray();
+                updateEnemyPosition();
+                seeIfEnemyGetsHitByBlast();
+                seeIfHeroGetsHitByEnemy();
+                updateOrbPosition();
+                updateDefenseTimer();
+                updateWeaponTimer();
+                updateScoreDisplay();
+                updateExtraLifeDisplay();
+                xBackgroundShift += .25;
+            }
+
+            function Render() {
+                ctx.save();
+                blank();
+                var heroImg = new Image();
+                renderHero(heroImg);
+                renderHeroBlasts();
+                renderEnemies();
+                renderOrbs();
+                renderShieldTimer();
+                renderWeaponTimer();
+                renderScoreAndExtraLives();
+                renderLevelScoreTimerAndLives(heroImg);
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+
+
+
+
+
+            /*
+                 *
+                     * Update Functions
+                 *
+             */
+
+
+
+
+
+
+            function updateBlastArray() {
                 for (var i = 0; i < blastArray.length; i++) {
                     blastArray[i].updatePos();
                     if(blastArray[i].x > canvas.width) {
@@ -907,10 +950,13 @@
                         //console.log(foo);
                     }
                 }
+            }
+            function updateEnemyPosition() {
                 for (var i = 0; i < enemyArray.length; i++) {
                     enemyArray[i].updatePos();
                 }
-
+            }
+            function seeIfEnemyGetsHitByBlast() {
                 for (var i = 0; i < blastArray.length; i++) {
                     for (var j = 0; j < enemyArray.length; j++) {
                         if (
@@ -921,14 +967,15 @@
                                 ) { enemyArray[j].getHitBy(i, j); }
                     }
                 }
-                // cycle through the enemyArray and see if the hero gets hit
+            }
+            function seeIfHeroGetsHitByEnemy() {
                 for (var i = 0; i < enemyArray.length; i++) {
                     if (
                             (hero.x + (hero.w/2) > enemyArray[i].x) &&
-                            (hero.x < enemyArray[i].x + enemyArray[i].w) &&
-                            (hero.y + hero.h > enemyArray[i].y) &&
-                            (hero.y < enemyArray[i].y + enemyArray[i].h)
-                       ) {
+                                    (hero.x < enemyArray[i].x + enemyArray[i].w) &&
+                                    (hero.y + hero.h > enemyArray[i].y) &&
+                                    (hero.y < enemyArray[i].y + enemyArray[i].h)
+                            ) {
                         switch (hero.defense) {
                             case "drill":
                                 enemyArray[i].getHitBy(0, i);
@@ -940,25 +987,25 @@
                             default :
                                 hero.die();
                                 break;
-                            }
                         }
+                    }
                 }
-
+            }
+            function updateOrbPosition() {
                 for (var i = 0; i < orbArray.length; i++) {
                     orbArray[i].updatePos();
                     if (
                             (hero.x + hero.w > orbArray[i].x) &&
-                            (hero.x < orbArray[i].x + orbArray[i].radius) &&
-                            (hero.y + hero.h > orbArray[i].y) &&
-                            (hero.y < orbArray[i].y + orbArray[i].radius)
-                       ) {
+                                    (hero.x < orbArray[i].x + orbArray[i].radius) &&
+                                    (hero.y + hero.h > orbArray[i].y) &&
+                                    (hero.y < orbArray[i].y + orbArray[i].radius)
+                            ) {
                         hero.itemUpdate(orbArray[i].weapon);
-                        //alert(hero.weapon);
                         orbArray.shift();
-                        // MARK 3 this calls the hero's itemUpdate() function
                     }
                 }
-
+            }
+            function updateDefenseTimer() {
                 if (hero.defenseTimer > 0) {
                     hero.defenseTimer--;
                     if (hero.defenseTimer <= 0) {
@@ -967,6 +1014,8 @@
                         hero.color = "yellow";
                     }
                 }
+            }
+            function updateWeaponTimer() {
                 if (hero.weaponTimer > 0) {
                     hero.weaponTimer--;
                     if (hero.weaponTimer <= 0) {
@@ -974,31 +1023,54 @@
                         hero.color = "yellow";
                     }
                 }
-
-
-               for (var i = 0; i < scoreDisplayArray.length; i++) {
+            }
+            function updateScoreDisplay() {
+                for (var i = 0; i < scoreDisplayArray.length; i++) {
                     scoreDisplayArray[i].alpha -= .04;
                     scoreDisplayArray[i].pos += 10;
                     if (scoreDisplayArray[i].pos > 200) { scoreDisplayArray.shift(); }
                 }
-
+            }
+            function updateExtraLifeDisplay() {
                 if (extraLifeTextPos > 0) {
                     extraLifeTextPos += 5;
                     if (extraLifeTextPos > 100) {
                         extraLifeTextPos = 0;
                     }
                 }
-
-                xBackgroundShift += .25;
             }
 
-            function Draw() {
-                ctx.save();
 
-                blank();
 
-                // Hero
-                var heroImg = new Image();
+
+
+
+
+            /*
+                 *
+                     *   Render Functions
+                 *
+             */
+
+
+
+
+
+
+
+            function blank() {
+                if (level > 0) {
+                    var backgroundImg = new Image();
+                    backgroundImg.src = levelData[level]['background'];
+                    bufferCanvasCtx.drawImage(backgroundImg, xBackgroundShift, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                } else {
+                    bufferCanvasCtx.fillStyle = "#000";
+                    bufferCanvasCtx.fillRect(0,0,bufferCanvasCtx.canvas.width, bufferCanvasCtx.canvas.height);
+                }
+            }
+
+
+            function renderHero(heroImg) {
                 if (hero.defense == "drill") {
                     heroImg.src = (imgShiftVal == 0)? hero.imgSrcShieldA : hero.imgSrcShieldB;
                 } else if (hero.defense == "mega") {
@@ -1007,8 +1079,8 @@
                     heroImg.src = (imgShiftVal == 0)? hero.imgSrcA : hero.imgSrcB;
                 }
                 bufferCanvasCtx.drawImage(heroImg, hero.x, hero.y);
-
-                // Hero's blasts
+            }
+            function renderHeroBlasts() {
                 bufferCanvasCtx.save();
                 for (var i = 0; i < blastArray.length; i++) {
                     bufferCanvasCtx.fillStyle = blastArray[i].color;
@@ -1024,36 +1096,23 @@
                     bufferCanvasCtx.fill();
                 }
                 bufferCanvasCtx.restore();
-
-                // Enemies
+            }
+            function renderEnemies() {
                 for (var i = 0; i < enemyArray.length; i++) {
                     var img = new Image();
                     img.src = (imgShiftVal == 0)? enemyArray[i].imgSrcA : enemyArray[i].imgSrcB;
                     bufferCanvasCtx.drawImage(img, enemyArray[i].x, enemyArray[i].y);
-                 }
-
+                }
+            }
+            function renderOrbs() {
                 for (var i = 0; i < orbArray.length; i++) {
                     bufferCanvasCtx.fillStyle = orbArray[i].color;
                     bufferCanvasCtx.beginPath();
                     bufferCanvasCtx.arc(orbArray[i].x, orbArray[i].y, orbArray[i].radius, 0, 2 * Math.PI);
                     bufferCanvasCtx.fill();
                 }
-
-                // Timer
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.font = "30pt Arial";
-                bufferCanvasCtx.fillText(timer, canvas.width/2 - 20, 50);
-                // Level
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.font = "20pt Arial";
-                var levelText = "Level " + level;
-                bufferCanvasCtx.fillText(levelText, 10, 45);
-                // Score Count
-                bufferCanvasCtx.fillStyle = "#DDD";
-                bufferCanvasCtx.font = "20pt Arial";
-                var scoreText = "Score: " + score;
-                bufferCanvasCtx.fillText(scoreText, 250, 45);
-
+            }
+            function renderShieldTimer() {
                 // Shield Timer
                 var barHeight = (hero.weaponTimer > 0)? 60 : 30;
                 if (hero.defense == "drill") {
@@ -1070,18 +1129,19 @@
                     bufferCanvasCtx.fillText("Mega Mode", canvas.width/2 - 30, canvas.height - (barHeight - 25));
 
                 }
-                // Weapon Timer
-
+            }
+            function renderWeaponTimer() {
                 if (hero.weaponTimer > 0) {
-                   eval("foo = new " + hero.weapon + ";");
-                   bufferCanvasCtx.fillStyle = foo.color;
+                    eval("foo = new " + hero.weapon + ";");
+                    bufferCanvasCtx.fillStyle = foo.color;
                     //bufferCanvasCtx.fillStyle = "red";
-                   bufferCanvasCtx.fillRect(((hero.maxWeaponTimer - hero.weaponTimer)* (canvas.width/hero.maxWeaponTimer))/2, canvas.height-30, (hero.weaponTimer * (canvas.width/hero.maxWeaponTimer)), 30);
-                   bufferCanvasCtx.fillStyle = "white";
-                   bufferCanvasCtx.font = "20pt Arial";
-                   bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
+                    bufferCanvasCtx.fillRect(((hero.maxWeaponTimer - hero.weaponTimer)* (canvas.width/hero.maxWeaponTimer))/2, canvas.height-30, (hero.weaponTimer * (canvas.width/hero.maxWeaponTimer)), 30);
+                    bufferCanvasCtx.fillStyle = "white";
+                    bufferCanvasCtx.font = "20pt Arial";
+                    bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
                 }
-
+            }
+            function renderScoreAndExtraLives() {
                 // Dynamic Score Display
                 bufferCanvasCtx.font = "20pt Arial";
                 for (var i = 0; i < scoreDisplayArray.length; i++) {
@@ -1095,17 +1155,31 @@
                     bufferCanvasCtx.font = "30pt Arial";
                     bufferCanvasCtx.fillText("EXTRA LIFE!", 900, 160-extraLifeTextPos);
                 }
+            }
+            function renderLevelScoreTimerAndLives(heroImg) {
+                // Level
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "20pt Arial";
+                var levelText = "Level " + level;
+                bufferCanvasCtx.fillText(levelText, 10, 45);
+                // Score Count
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "20pt Arial";
+                var scoreText = "Score: " + score;
+                bufferCanvasCtx.fillText(scoreText, 250, 45);
+                // Timer
+                bufferCanvasCtx.fillStyle = "#DDD";
+                bufferCanvasCtx.font = "30pt Arial";
+                bufferCanvasCtx.fillText(timer, canvas.width/2 - 20, 50);
                 // Lives
                 bufferCanvasCtx.fillStyle = (extraLifeTextPos > 0)? "#FFF" : "#DDD";
                 bufferCanvasCtx.drawImage(heroImg, 900, 15);
                 bufferCanvasCtx.font = (extraLifeTextPos > 0)? "35pt Arial" : "30pt Arial";
                 var livesText = " x " + lives;
                 bufferCanvasCtx.fillText(livesText, 1025, 57);
-
-                // copy the entire rendered image from the bugger canvas to the visible one
-                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
-                ctx.restore();
             }
+
+
 
 
 
