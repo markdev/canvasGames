@@ -17,6 +17,15 @@
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
         <script>
 
+        // The all-important beget function from Javascript: the Good Parts
+        if (typeof Object.beget !== 'function') {
+            Object.beget = function (o) {
+                var F = function () {};
+                F.prototype = o;
+                return new F();
+            };
+        }
+
             /*
             *   Global Variables
             *
@@ -53,7 +62,7 @@
             var lives = null;
             var orb = null;
             var orbArray = [];
-            var weaponOrbFrequency = 2; // on average, one orb will generate every weaponOrbFrequency seconds
+            var itemOrbFrequency = 2; // on average, one orb will generate every itemOrbFrequency seconds
             var xBackgroundShift = 0;
 
 
@@ -69,7 +78,7 @@
                 levelData[1] = [];
                 levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 1 };
+                levelData[1]['config'] = { timer : 12, genrate : 900, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
@@ -159,27 +168,16 @@
                 };
             }
 
-            function weaponOrb(weapon, x, y) {
+            function itemOrb(item, x, y) {
                 this.radius = 15;
-                //this.x = canvas.width - 100;
                 this.x = x;
-                //this.y = Math.random() * canvas.height;
                 this.y = y;
-                switch (weapon) {
-                    case "dualLaser":
-                        this.color = "red";
-                        break;
-                    case "peaShooter":
-                        this.color = "yellow";
-                        break;
-                    case "bouncyBalls":
-                        this.color = "blue";
-                        break;
-                    case "shield":
-                        this.color = "rgba(0, 255, 255, 1)";
-                        break;
-                }
-                this.weapon = weapon;
+                eval("foo = new " + item + "()"); // foo gets assigned the item object
+                this.color = foo.color;
+                this.type = foo.type;
+
+
+                this.weapon = item;
                 this.velx = -10;
                 this.updatePos = function() {
                     this.x += this.velx;
@@ -200,7 +198,7 @@
                 this.value = 20;
                 this.imgSrcA = "img/spacefish/bigBloaterA.png";
                 this.imgSrcB = "img/spacefish/bigBloaterB.png";
-                this.weaponDrop = "shield";
+                this.itemDrop = "shield";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -219,7 +217,7 @@
                 this.value = 30;
                 this.imgSrcA = "img/spacefish/speedyBlueA.png";
                 this.imgSrcB = "img/spacefish/speedyBlueB.png";
-                this.weaponDrop = "dualLaser";
+                this.itemDrop = "dualLaser";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -238,7 +236,7 @@
                 this.value = 40;
                 this.imgSrcA = "img/spacefish/sinusoidSwimmerA.png";
                 this.imgSrcB = "img/spacefish/sinusoidSwimmerB.png";
-                this.weaponDrop = "dualLaser";
+                this.itemDrop = "dualLaser";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var sin = Math.sin(this.x * 2.5) * 80;
@@ -259,7 +257,7 @@
                 this.value = 50;
                 this.imgSrcA = "img/spacefish/homingFishA.png";
                 this.imgSrcB = "img/spacefish/homingFishB.png";
-                this.weaponDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var home = ((this.y + this.h/2) > hero.y)? -10 : 10;
@@ -280,7 +278,7 @@
                 this.value = 60;
                 this.imgSrcA = "img/spacefish/splitFishBigA.png";
                 this.imgSrcB = "img/spacefish/splitFishBigB.png";
-                this.weaponDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -302,7 +300,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
-                this.weaponDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y -= 3;
@@ -322,7 +320,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
-                this.weaponDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -341,7 +339,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
-                this.weaponDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y += 3;
@@ -361,7 +359,7 @@
                 this.value = 80;
                 this.imgSrcA = "img/spacefish/spitFireFishA.png";
                 this.imgSrcB = "img/spacefish/spitFireFishB.png";
-                this.weaponDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     if ((this.x < 900 && this.x > 875) || (this.x < 400 && this.x > 375)) {
@@ -406,7 +404,13 @@
                 };
             }
 
+            function doubleLaser() {
+                this.type = "weapon";
+                this.color = "red";
+            }
+
             function dualLaser(loc) {
+                this.type = "weapon";
                 this.w = 80;
                 this.h = 10;
                 this.y = hero.y + hero.h/2 - this.h/2 + loc;
@@ -434,6 +438,7 @@
             }
 
             function shield() {
+                this.type = "defense";
                 this.w = hero.w * 2;
                 this.h = hero.h;
                 this.y = hero.y;
@@ -542,11 +547,11 @@
                 blastArray.pop();
 
                 // release the orb
-                if (enemyArray[j].weaponDrop) {
+                if (enemyArray[j].itemDrop) {
                     var go = Math.random() * levelData[level]['config'].droprate;
                     if (go < 1) {
-                        orbArray[orbArray.length] = new weaponOrb(enemyArray[j].weaponDrop, enemyArray[j].x + (enemyArray[j].w/2), enemyArray[j].y + (enemyArray[j].h/2));
-                    }
+                        orbArray[orbArray.length] = new itemOrb(enemyArray[j].itemDrop, enemyArray[j].x + (enemyArray[j].w/2), enemyArray[j].y + (enemyArray[j].h/2));
+                    } // MARK 1 here is where the item is dropped initially
                 }
 
                 // now do the score and extra life thang
