@@ -144,6 +144,7 @@
                             break;
                         case "hellfire":
                             blastArray[blastArray.length] = new hellfire();
+                            blastArray[blastArray.length] = new hellfire();
                             break;
                         case "dualLaser":
                             blastArray[blastArray.length] = new dualLaser(20);
@@ -897,7 +898,13 @@
                 for (var i = 0; i < blastArray.length; i++) {
                     blastArray[i].updatePos();
                     if(blastArray[i].x > canvas.width) {
-                        blastArray.shift();
+                        //blastArray.shift();
+                        for (i; i < blastArray.length; i++) {
+                            blastArray[i] = blastArray[i + 1];
+                        }
+                        blastArray.pop();
+                        //foo.pop();
+                        //console.log(foo);
                     }
                 }
                 for (var i = 0; i < enemyArray.length; i++) {
