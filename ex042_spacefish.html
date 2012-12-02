@@ -78,7 +78,7 @@
                 levelData[1] = [];
                 levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[1]['config'] = { timer : 12, genrate : 900, droprate : 1 };
+                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
@@ -126,6 +126,8 @@
                 this.color = "white";
                 this.weapon = "peaShooter";
                 this.defense = "";
+                this.defenseTimer = 0;
+                this.maxDefenseTimer = 0;
                 this.weaponTimer = 0;
                 this.maxWeaponTimer = 300;
                 this.imgSrcA = "img/spacefish/spaceShipA.png";
@@ -153,7 +155,6 @@
                 };
                 this.itemUpdate = function(newWeapon) {
                     eval("foo = new " + newWeapon + "()");
-                    // alert(foo.type);
                     switch (foo.type) {
                         case "weapon":
                             this.weapon = newWeapon;
@@ -162,7 +163,8 @@
                             break;
                         case "defense":
                             this.defense = newWeapon;
-                                alert(this.defense);
+                            this.defenseTimer = foo.timer;
+                            this.maxDefenseTimer = foo.timer;
                             break;
                         case "special":
                             alert("oh this is special");
@@ -473,8 +475,7 @@
                 this.y = hero.y;
                 this.x = hero.x;
                 this.color = "rgba(0, 255, 255, .25)";
-                //this.velx = 20;
-                //this.vely = dir;
+                this.timer = 100;
                 this.updatePos = function() {
                     // it don't go nowhere!!!
                 };
@@ -829,6 +830,13 @@
                     }
                 }
 
+                if (hero.defenseTimer > 0) {
+                    hero.defenseTimer--;
+                    if (hero.defenseTimer <= 0) {
+                        hero.defense = "";
+                        hero.color = "yellow";
+                    }
+                }
                 if (hero.weaponTimer > 0) {
                     hero.weaponTimer--;
                     if (hero.weaponTimer <= 0) {
@@ -836,6 +844,7 @@
                         hero.color = "yellow";
                     }
                 }
+
 
                for (var i = 0; i < scoreDisplayArray.length; i++) {
                     scoreDisplayArray[i].alpha -= .04;
@@ -902,6 +911,15 @@
                 var scoreText = "Score: " + score;
                 bufferCanvasCtx.fillText(scoreText, 250, 45);
 
+                // Shield Timer
+                var barHeight = (hero.weaponTimer > 0)? 60 : 30;
+                if (hero.defense == "shield") {
+                    bufferCanvasCtx.fillStyle = "rgba(0,255,255,.5)";
+                    bufferCanvasCtx.fillRect(((hero.maxDefenseTimer - hero.defenseTimer)* (canvas.width/hero.maxDefenseTimer))/2, canvas.height-barHeight, (hero.defenseTimer * (canvas.width/hero.maxDefenseTimer)), 30);
+                    bufferCanvasCtx.fillStyle = "white";
+                    bufferCanvasCtx.font = "20pt Arial";
+                    bufferCanvasCtx.fillText(hero.defense, canvas.width/2 - 30, canvas.height - (barHeight - 25));
+                }
                 // Weapon Timer
                 if (hero.weaponTimer > 0) {
                     bufferCanvasCtx.fillStyle = hero.color;
