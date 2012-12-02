@@ -125,10 +125,13 @@
                 this.y = canvas.height/2 - this.h/2;
                 this.color = "white";
                 this.weapon = "peaShooter";
+                this.defense = "";
                 this.weaponTimer = 0;
                 this.maxWeaponTimer = 300;
                 this.imgSrcA = "img/spacefish/spaceShipA.png";
                 this.imgSrcB = "img/spacefish/spaceShipB.png";
+                this.imgSrcShieldA = "img/spacefish/spaceShipShieldA.png";
+                this.imgSrcShieldB = "img/spacefish/spaceShipShieldB.png";
                 this.fire = function() {
                     switch (this.weapon) {
                         case "peaShooter":
@@ -148,9 +151,25 @@
                             break;
                     }
                 };
-                this.weaponUpdate = function(newWeapon) {
-                    this.weapon = newWeapon;
-                    this.weaponTimer = this.maxWeaponTimer;
+                this.itemUpdate = function(newWeapon) {
+                    eval("foo = new " + newWeapon + "()");
+                    // alert(foo.type);
+                    switch (foo.type) {
+                        case "weapon":
+                            this.weapon = newWeapon;
+                            this.weaponTimer = foo.timer;
+                            this.maxWeaponTimer = foo.timer;
+                            break;
+                        case "defense":
+                            this.defense = newWeapon;
+                                alert(this.defense);
+                            break;
+                        case "special":
+                            alert("oh this is special");
+                            break;
+                    }
+                   // this.weapon = newWeapon;
+                   // this.weaponTimer = this.maxWeaponTimer;
                     switch (newWeapon) {
                         case "dualLaser":
                             hero.color = "red";
@@ -166,6 +185,15 @@
                             break;
                     }
                 };
+                this.die = function () {
+                    lives--;
+                    if (lives < 0) {
+                        gameOver();
+                    }
+                    else {
+                        playLevel();
+                    }
+                };
             }
 
             function itemOrb(item, x, y) {
@@ -175,7 +203,7 @@
                 eval("foo = new " + item + "()"); // foo gets assigned the item object
                 this.color = foo.color;
                 this.type = foo.type;
-
+                // MARK 2 here is where the orb is collected
 
                 this.weapon = item;
                 this.velx = -10;
@@ -411,6 +439,7 @@
 
             function dualLaser(loc) {
                 this.type = "weapon";
+                this.timer = 50;
                 this.w = 80;
                 this.h = 10;
                 this.y = hero.y + hero.h/2 - this.h/2 + loc;
@@ -541,10 +570,12 @@
 
             function kill(i, j) {
                 // remove the blast from blastArray
-                for (i; i < blastArray.length - 1; i++) {
-                    blastArray[i] = blastArray[i+1];
+                if (j != 100) {
+                    for (i; i < blastArray.length - 1; i++) {
+                        blastArray[i] = blastArray[i+1];
+                    }
+                    blastArray.pop();
                 }
-                blastArray.pop();
 
                 // release the orb
                 if (enemyArray[j].itemDrop) {
@@ -576,7 +607,7 @@
                 }
                 enemyArray.pop();
             }
-
+/*
             function die() {
                 lives--;
                 if (lives < 0) {
@@ -586,7 +617,7 @@
                     playLevel();
                 }
             }
-
+*/
             function gameOver() {
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
@@ -771,7 +802,17 @@
                             (hero.x < enemyArray[i].x + enemyArray[i].w) &&
                             (hero.y + hero.h > enemyArray[i].y) &&
                             (hero.y < enemyArray[i].y + enemyArray[i].h)
-                       ) { die(); break; }
+                       ) {
+                        switch (hero.defense) {
+                            case "shield":
+                                //enemyArray[i].getHitBy(0, 100);
+                                //alert("the shield works!");
+                                break;
+                            default :
+                                hero.die();
+                                break;
+                            }
+                        }
                 }
 
                 for (var i = 0; i < orbArray.length; i++) {
@@ -782,8 +823,9 @@
                             (hero.y + hero.h > orbArray[i].y) &&
                             (hero.y < orbArray[i].y + orbArray[i].radius)
                        ) {
-                        hero.weaponUpdate(orbArray[i].weapon);
-                        //hero.weapon = orbArray[i].weapon;
+                        hero.itemUpdate(orbArray[i].weapon);
+                        orbArray.shift();
+                        // MARK 3 this calls the hero's itemUpdate() function
                     }
                 }
 
@@ -818,7 +860,11 @@
 
                 // Hero
                 var heroImg = new Image();
-                heroImg.src = (imgShiftVal == 0)? hero.imgSrcA : hero.imgSrcB;
+                if (hero.defense == "shield") {
+                    heroImg.src = (imgShiftVal == 0)? hero.imgSrcShieldA : hero.imgSrcShieldB;
+                } else {
+                    heroImg.src = (imgShiftVal == 0)? hero.imgSrcA : hero.imgSrcB;
+                }
                 bufferCanvasCtx.drawImage(heroImg, hero.x, hero.y);
 
                 // Hero's blasts
