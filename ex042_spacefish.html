@@ -74,6 +74,8 @@
 
 
 
+
+
             /*
                 *
                     *   Objects
@@ -607,12 +609,18 @@
             function keyPress(e) {
                 if (game.mode == "start") {
                     clearInterval(openingTimer);
+                    game.mode = "instructions";
+                    initialize();
+                }
+                if (game.mode == "instructions") {
+                    clearInterval(instructionsTimer);
                     game.mode = "game";
                     game.level = 1;
                     playLevel();
                 }
                 if (game.mode == "gameOver") {
                     clearInterval(endingTimer);
+                    // MARK 5 come here and clear this bug
                     game.mode = "start";
                     game.lives = 2;
                     game.score = 0;
@@ -633,7 +641,6 @@
             function mousePress() {
                hero.fire();
             }
-
 
 
 
@@ -755,6 +762,10 @@
                     openingTimer = setInterval(drawOpening, 300);
                 }
 
+                if (game.mode == "instructions") {
+                    instructionsTimer = setInterval(drawInstructions, 300);
+                }
+
                 if (game.mode == "gameOver") {
                     endingTimer = setInterval(drawEnding, 300);
                 }
@@ -817,6 +828,29 @@
                 bufferCanvasCtx.fillStyle = "white";
                 bufferCanvasCtx.font = "50pt Arial";
                 bufferCanvasCtx.fillText("SPACEFISH", canvas.width/2 - 200, canvas.height/2 -130);
+
+                bufferCanvasCtx.font = "30pt Arial";
+                bufferCanvasCtx.fillText("by M.A.R.K.", canvas.width/2 - 120, canvas.height/2 -60);
+
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.font = "25pt Arial";
+                bufferCanvasCtx.fillText(game.startText, canvas.width/2 - 180, canvas.height/2 + 30);
+
+                if (game.startText == "Press any key to start")  { game.startText = "";}
+                else { game.startText = "Press any key to start"; }
+
+                // copy the entire rendered image from the bugger canvas to the visible one
+                ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
+                ctx.restore();
+            }
+
+            function drawInstructions() {
+                ctx.save();
+                clear();
+
+                bufferCanvasCtx.fillStyle = "white";
+                bufferCanvasCtx.font = "50pt Arial";
+                bufferCanvasCtx.fillText("INSTRUCTIONS", canvas.width/2 - 200, canvas.height/2 -130);
 
                 bufferCanvasCtx.font = "30pt Arial";
                 bufferCanvasCtx.fillText("by M.A.R.K.", canvas.width/2 - 120, canvas.height/2 -60);
