@@ -134,6 +134,9 @@
                             blastArray[blastArray.length] = new bouncyBall(0);
                             blastArray[blastArray.length] = new bouncyBall(10);
                             break;
+                        case "shield":
+                            blastArray[blastArray.length] = new shield();
+                            break;
                     }
                 };
                 this.weaponUpdate = function(newWeapon) {
@@ -148,6 +151,9 @@
                             break;
                         case "bouncyBalls":
                             hero.color = "blue";
+                            break;
+                        case "shield":
+                            hero.color = "rgba(0, 255, 255, .25)";
                             break;
                     }
                 };
@@ -168,6 +174,9 @@
                         break;
                     case "bouncyBalls":
                         this.color = "blue";
+                        break;
+                    case "shield":
+                        this.color = "rgba(0, 255, 255, 1)";
                         break;
                 }
                 this.weapon = weapon;
@@ -191,7 +200,7 @@
                 this.value = 20;
                 this.imgSrcA = "img/spacefish/bigBloaterA.png";
                 this.imgSrcB = "img/spacefish/bigBloaterB.png";
-                //this.weaponDrop = null;
+                this.weaponDrop = "shield";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -421,6 +430,19 @@
                     if (this.y > canvas.height || this.y < 0) { this.vely = -this.vely; }
                     this.x += this.velx;
                     this.y += this.vely;
+                };
+            }
+
+            function shield() {
+                this.w = hero.w * 2;
+                this.h = hero.h;
+                this.y = hero.y;
+                this.x = hero.x;
+                this.color = "rgba(0, 255, 255, .25)";
+                //this.velx = 20;
+                //this.vely = dir;
+                this.updatePos = function() {
+                    // it don't go nowhere!!!
                 };
             }
 
@@ -836,7 +858,6 @@
                     bufferCanvasCtx.fillStyle = "white";
                     bufferCanvasCtx.font = "20pt Arial";
                     bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
-
                 }
 
                 // Dynamic Score Display
