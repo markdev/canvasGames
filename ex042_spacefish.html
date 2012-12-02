@@ -76,10 +76,10 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["homingFish"];
+                levelData[1]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
                 //levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
                 levelData[1]['background'] = "img/spacefish/darkBack.png";
-                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 1 };
+                levelData[1]['config'] = { timer : 60, genrate : 400, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
@@ -135,6 +135,8 @@
                 this.imgSrcB = "img/spacefish/spaceShipB.png";
                 this.imgSrcShieldA = "img/spacefish/spaceShipShieldA.png";
                 this.imgSrcShieldB = "img/spacefish/spaceShipShieldB.png";
+                this.imgSrcMegaA = "img/spacefish/spaceShipMegaA.png";
+                this.imgSrcMegaB = "img/spacefish/spaceShipMegaB.png";
                 this.fire = function() {
                     switch (this.weapon) {
                         case "peaShooter":
@@ -174,7 +176,8 @@
                             this.maxDefenseTimer = foo.timer;
                             break;
                         case "special":
-                            alert("oh this is special");
+                            this.defense = "mega";
+                            this.h = 75;
                             break;
                     }
                    // this.weapon = newWeapon;
@@ -235,7 +238,7 @@
                 this.value = 20;
                 this.imgSrcA = "img/spacefish/bigBloaterA.png";
                 this.imgSrcB = "img/spacefish/bigBloaterB.png";
-                this.itemDrop = "shield";
+                this.itemDrop = "mega";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -517,6 +520,18 @@
                 };
             }
 
+            function mega() {
+                this.type = "special";
+                this.w = hero.w;
+                this.h = hero.h;
+                this.y = hero.y;
+                this.x = hero.x;
+                this.color = "rgba(255, 255, 255, .20)";
+                //this.timer = 100;
+                this.updatePos = function() {
+                    // it don't go nowhere!!!
+                };
+            }
 
 
             /*
@@ -644,17 +659,7 @@
                 }
                 enemyArray.pop();
             }
-/*
-            function die() {
-                lives--;
-                if (lives < 0) {
-                    gameOver();
-                }
-                else {
-                    playLevel();
-                }
-            }
-*/
+
             function gameOver() {
                 if (animInt) { window.clearInterval(animInt); }
                 if (countInt) { window.clearInterval(countInt); }
@@ -842,8 +847,11 @@
                        ) {
                         switch (hero.defense) {
                             case "shield":
-                                //enemyArray[i].getHitBy(0, 100);
-                                //alert("the shield works!");
+                                enemyArray[i].getHitBy(0, i);
+                                break;
+                            case "mega":
+                                enemyArray[i].getHitBy(0, i);
+                                hero.defense = "";
                                 break;
                             default :
                                 hero.die();
@@ -908,6 +916,8 @@
                 var heroImg = new Image();
                 if (hero.defense == "shield") {
                     heroImg.src = (imgShiftVal == 0)? hero.imgSrcShieldA : hero.imgSrcShieldB;
+                } else if (hero.defense == "mega") {
+                    heroImg.src = (imgShiftVal == 0)? hero.imgSrcMegaA : hero.imgSrcMegaB;
                 } else {
                     heroImg.src = (imgShiftVal == 0)? hero.imgSrcA : hero.imgSrcB;
                 }
@@ -956,6 +966,13 @@
                     bufferCanvasCtx.fillStyle = "white";
                     bufferCanvasCtx.font = "20pt Arial";
                     bufferCanvasCtx.fillText(hero.defense, canvas.width/2 - 30, canvas.height - (barHeight - 25));
+                } else if (hero.defense == "mega") {
+                    bufferCanvasCtx.fillStyle = "rgba(255,255,255,.3)";
+                    bufferCanvasCtx.fillRect(0, canvas.height - barHeight, canvas.width, 30);
+                    bufferCanvasCtx.fillStyle = "white";
+                    bufferCanvasCtx.font = "20pt Arial";
+                    bufferCanvasCtx.fillText("Mega Mode", canvas.width/2 - 30, canvas.height - (barHeight - 25));
+
                 }
                 // Weapon Timer
 
