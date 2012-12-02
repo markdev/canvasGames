@@ -76,9 +76,10 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["sinusoidSwimmer"];
-                levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[1]['config'] = { timer : 12, genrate : 900, droprate : 1 };
+                levelData[1]['enemies'] = ["homingFish"];
+                //levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
+                levelData[1]['background'] = "img/spacefish/darkBack.png";
+                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
@@ -150,6 +151,9 @@
                             break;
                         case "shockwave":
                             blastArray[blastArray.length] = new shockwave();
+                            break;
+                        case "homingMissile":
+                            blastArray[blastArray.length] = new homingMissile();
                             break;
                         case "shield":
                             blastArray[blastArray.length] = new shield();
@@ -290,7 +294,7 @@
                 this.value = 50;
                 this.imgSrcA = "img/spacefish/homingFishA.png";
                 this.imgSrcB = "img/spacefish/homingFishB.png";
-                this.itemDrop = "bouncyBall";
+                this.itemDrop = "homingMissile";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var home = ((this.y + this.h/2) > hero.y)? -10 : 10;
@@ -461,6 +465,24 @@
                 this.color = "yellow";
                 this.velx = 15;
                 this.updatePos = function() {
+                    this.x += this.velx;
+                };
+            }
+
+            function homingMissile() {
+                this.type = "weapon";
+                this.timer = 150;
+                this.w = 60;
+                this.h = 30;
+                this.y = hero.y;
+                this.x = hero.w;
+                this.color = "rgba(255,0,0,.25)";
+                this.velx = 20;
+                this.updatePos = function() {
+                    if (enemyArray.length > 0) {
+                        var enemyYPos = enemyArray[enemyArray.length-1].y;
+                        this.y += (enemyYPos - this.y) * .05;
+                    }
                     this.x += this.velx;
                 };
             }
