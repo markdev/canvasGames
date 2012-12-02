@@ -142,6 +142,9 @@
                         case "peaShooter":
                             blastArray[blastArray.length] = new peaShooterBlast();
                             break;
+                        case "hellfire":
+                            blastArray[blastArray.length] = new hellfire();
+                            break;
                         case "dualLaser":
                             blastArray[blastArray.length] = new dualLaser(20);
                             blastArray[blastArray.length] = new dualLaser(-20);
@@ -442,7 +445,7 @@
                 this.value = 80;
                 this.imgSrcA = "img/spacefish/crabCakesA.png";
                 this.imgSrcB = "img/spacefish/crabCakesB.png";
-                this.itemDrop = "drill";
+                this.itemDrop = "hellfire";
                 this.updatePos = function() {
                     this.x += this.velx;
                     if (this.x < 0 && this.dirx == "left") {
@@ -482,6 +485,42 @@
                 this.velx = 25;
                 this.updatePos = function() {
                     this.x += this.velx;
+                };
+            }
+
+            function hellfire() {
+                this.type = "weapon";
+                this.timer = 50;
+                this.w = 30;
+                this.h = 10;
+                this.radius = 10;
+                this.y = hero.y + hero.h/2 - this.h/2;
+                this.x = hero.w;
+                this.color = "white";
+                this.dirx = "right";
+                this.velx = 10 + (Math.random() * 35);
+                    var randdir = (Math.random > .5)? "up" : "down";
+                this.diry = randdir;
+                this.vely = (randdir == "up")? -10 - (Math.random() * 35) : 10 + Math.random() * 35;
+                this.updatePos = function() {
+                    this.x += this.velx;
+                    if (this.x < 0 && this.dirx == "left") {
+                        this.dirx = "right";
+                        this.velx = 10 + (Math.random() * 35);
+                    }
+                    if (this.x > canvas.width - this.w && this.dirx == "right") {
+                        this.dirx = "left";
+                        this.velx = - (10 + (Math.random() * 35));
+                    }
+                    this.y += this.vely;
+                    if (this.y < 0 && this.diry == "up") {
+                        this.diry = "down";
+                        this.vely = 10 + (Math.random() * 35);
+                    }
+                    if (this.y > canvas.height - this.h && this.diry == "down") {
+                        this.diry = "up";
+                        this.vely = - (10 + (Math.random() * 35));
+                    }
                 };
             }
 
