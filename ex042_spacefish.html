@@ -68,47 +68,38 @@
             var levelData = [];
                 levelData[1] = [];
                 levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
-                levelData[1]['weapons'] = ["dualLaser"];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 2 };
+                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
-                levelData[2]['weapons'] = ["dualLaser"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
                 levelData[2]['config'] = { timer : 15, genrate : 800, droprate : 2 };
                 levelData[3] = [];
                 levelData[3]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
-                levelData[3]['weapons'] = ["dualLaser"];
                 levelData[3]['background'] = "img/spacefish/blue-outer-space-stars-planets-nebulae-1680x1050-hd-wallpaper.jpg";
                 levelData[3]['config'] = { timer : 18, genrate : 700, droprate : 2 };
                 levelData[4] = [];
                 levelData[4]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
-                levelData[4]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[4]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-010.jpg";
                 levelData[4]['config'] = { timer : 21, genrate : 600, droprate : 2 };
                 levelData[5] = [];
                 levelData[5]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
-                levelData[5]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[5]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-004.jpg";
                 levelData[5]['config'] = { timer : 24, genrate : 500, droprate : 2 };
                 levelData[6] = [];
                 levelData[6]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
-                levelData[6]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[6]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-008.jpg";
                 levelData[6]['config'] = { timer : 27, genrate : 400, droprate : 2 };
                 levelData[7] = [];
                 levelData[7]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
-                levelData[7]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[7]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-009.jpg";
                 levelData[7]['config'] = { timer : 30, genrate : 300, droprate : 2 };
                 levelData[8] = [];
                 levelData[8]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
-                levelData[8]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[8]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
                 levelData[8]['config'] = { timer : 33, genrate : 250, droprate : 2 };
                 levelData[9] = [];
                 levelData[9]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer", "homingFish", "splitFishBig", "spitFireFish"];
-                levelData[9]['weapons'] = ["dualLaser", "bouncyBalls"];
                 levelData[9]['background'] = "img/spacefish/Outer Space Wallpapers/Outer-Space-Artwork.jpg";
                 levelData[9]['config'] = { timer : 36, genrate : 220, droprate : 2 };
 
@@ -200,6 +191,7 @@
                 this.value = 20;
                 this.imgSrcA = "img/spacefish/bigBloaterA.png";
                 this.imgSrcB = "img/spacefish/bigBloaterB.png";
+                //this.weaponDrop = null;
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -218,6 +210,7 @@
                 this.value = 30;
                 this.imgSrcA = "img/spacefish/speedyBlueA.png";
                 this.imgSrcB = "img/spacefish/speedyBlueB.png";
+                this.weaponDrop = "dualLaser";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -236,6 +229,7 @@
                 this.value = 40;
                 this.imgSrcA = "img/spacefish/sinusoidSwimmerA.png";
                 this.imgSrcB = "img/spacefish/sinusoidSwimmerB.png";
+                this.weaponDrop = "dualLaser";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var sin = Math.sin(this.x * 2.5) * 80;
@@ -256,6 +250,7 @@
                 this.value = 50;
                 this.imgSrcA = "img/spacefish/homingFishA.png";
                 this.imgSrcB = "img/spacefish/homingFishB.png";
+                this.weaponDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var home = ((this.y + this.h/2) > hero.y)? -10 : 10;
@@ -276,6 +271,7 @@
                 this.value = 60;
                 this.imgSrcA = "img/spacefish/splitFishBigA.png";
                 this.imgSrcB = "img/spacefish/splitFishBigB.png";
+                this.weaponDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -297,6 +293,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
+                this.weaponDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y -= 3;
@@ -316,6 +313,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
+                this.weaponDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                 }
@@ -334,6 +332,7 @@
                 this.value = 70;
                 this.imgSrcA = "img/spacefish/splitFishSmallA.png";
                 this.imgSrcB = "img/spacefish/splitFishSmallB.png";
+                this.weaponDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     this.y += 3;
@@ -353,6 +352,7 @@
                 this.value = 80;
                 this.imgSrcA = "img/spacefish/spitFireFishA.png";
                 this.imgSrcB = "img/spacefish/spitFireFishB.png";
+                this.weaponDrop = "bouncyBalls";
                 this.updatePos = function() {
                     this.x += this.velx;
                     if ((this.x < 900 && this.x > 875) || (this.x < 400 && this.x > 375)) {
@@ -508,18 +508,6 @@
                     }
             }
 
-            /*
-            function addOrb() {
-                if (levelData[level]['weapons'].length > 0) {
-                    var num = Math.floor(Math.random() * levelData[level]['weapons'].length);
-                    var go = Math.ceil(Math.random() * weaponOrbFrequency);
-                    if (go == weaponOrbFrequency) {
-                        orbArray[orbArray.length] = new weaponOrb(levelData[level]['weapons'][num]);
-                    }
-                }
-            }
-            */
-
             function shiftImgSrc() {
                 imgShiftVal = (imgShiftVal == 0)? 1 : 0;
             }
@@ -532,11 +520,10 @@
                 blastArray.pop();
 
                 // release the orb
-                if (levelData[level]['weapons'].length > 0) {
-                    var num = Math.floor(Math.random() * levelData[level]['weapons'].length);
+                if (enemyArray[j].weaponDrop) {
                     var go = Math.random() * levelData[level]['config'].droprate;
                     if (go < 1) {
-                        orbArray[orbArray.length] = new weaponOrb(levelData[level]['weapons'][num], enemyArray[j].x + (enemyArray[j].w/2), enemyArray[j].y + (enemyArray[j].h/2));
+                        orbArray[orbArray.length] = new weaponOrb(enemyArray[j].weaponDrop, enemyArray[j].x + (enemyArray[j].w/2), enemyArray[j].y + (enemyArray[j].h/2));
                     }
                 }
 
