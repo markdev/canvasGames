@@ -14,7 +14,7 @@
 
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/initialize.css">
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="js/vendor/game.modernizr-2.6.2.min.js"></script>
         <script>
 
         // The all-important beget function from Javascript: the Good Parts
@@ -34,10 +34,20 @@
             var ctx = null;
             var bufferCanvas = null;
             var bufferCanvasCtx = null;
-            var mode = "start";
-            var startText = "Press any key to start";
-            var restartText = "Press any key to restart";
-            var score = null;
+        
+            var game = new function() {
+                this.mode = "start";
+                this.startText = "Press any key to start";
+                this.restartText = "Press any key to restart";
+                this.score = null;
+                this.scoreArray = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+                this.scoreArrayPos = 0;
+                this.lives = null;
+            }
+
+
+            var scoreDisplayArray = [];
+            var extraLifeTextPos = 0;
             var hero = null;
             var weapon = 1;
             var blastArray = [];
@@ -53,13 +63,10 @@
             var imgShiftVal = 0;
             var enemyArray = [];
                 // Score variables
-            var score = null;
-            var scoreArray = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-            var scoreArrayPos = 0;
-            var scoreDisplayArray = [];
-            var extraLifeTextPos = 0;
+            //var score = null;
 
-            var lives = null;
+
+
             var orb = null;
             var orbArray = [];
             var itemOrbFrequency = 2; // on average, one orb will generate every itemOrbFrequency seconds
@@ -203,8 +210,8 @@
                     }
                 };
                 this.die = function () {
-                    lives--;
-                    if (lives < 0) {
+                    game.lives--;
+                    if (game.lives < 0) {
                         gameOver();
                     }
                     else {
@@ -640,17 +647,17 @@
             document.onmouseup = mousePress;
 
             function keyPress(e) {
-                if (mode == "start") {
+                if (game.mode == "start") {
                     clearInterval(openingTimer);
-                    mode = "game";
+                    game.mode = "game";
                     level = 1;
                     playLevel();
                 }
-                if (mode == "gameOver") {
+                if (game.mode == "gameOver") {
                     clearInterval(endingTimer);
-                    mode = "start";
-                    lives = 2;
-                    score = 0;
+                    game.mode = "start";
+                    game.lives = 2;
+                    game.score = 0;
                     initialize();
                 }
             }
@@ -716,11 +723,11 @@
                 }
 
                 // now do the score and extra life thang
-                score += enemyArray[j].value;
-                if (score >= scoreArray[scoreArrayPos]) {
-                    lives++;
+                game.score += enemyArray[j].value;
+                if (game.score >= game.scoreArray[game.scoreArrayPos]) {
+                    game.lives++;
                     extraLifeTextPos = 1;
-                    scoreArrayPos++;
+                    game.scoreArrayPos++;
                 }
                 scoreDisplayArray[scoreDisplayArray.length] = {
                     x : enemyArray[j].x + (enemyArray[j].w/2),
@@ -745,16 +752,29 @@
                 blastArray = [];
                 enemyArray = [];
 
-                mode = "gameOver";
+                game.mode = "gameOver";
 
                 initialize();
             }
 
+        
+        
+        
+        
+        
+        
 
             /*
-            *       Game State Functions
-            *
+                *
+                    *  Game State Functions
+                *
             */
+        
+        
+        
+        
+        
+        
             function initialize() {
                 canvas = document.getElementById("canvas");
                 ctx  = canvas.getContext("2d");
@@ -765,19 +785,19 @@
                 bufferCanvasCtx.canvas.height = ctx.canvas.height;
 
                 //initialize game variables
-                score = 0;
+                game.score = 0;
                 level = 0;
-                lives = 2;
+                game.lives = 2;
                // maxTime = 10;
 
 
-                if (mode == "start") {
-                    score = 0;
+                if (game.mode == "start") {
+                    game.score = 0;
                     openingTimer = setInterval(drawOpening, 300);
                 }
 
 
-                if (mode == "gameOver") {
+                if (game.mode == "gameOver") {
                     endingTimer = setInterval(drawEnding, 300);
                 }
             }
@@ -799,11 +819,11 @@
                 xBackgroundShift = 0;
 
                 // level splash screen
-                mode = "levelSplash";
+                game.mode = "levelSplash";
                 levelSplash();
 
                 // play the level
-                mode = "game";
+                game.mode = "game";
 
                 setTimeout(function() {
                     animInt = setInterval(animate, 30);
@@ -814,10 +834,29 @@
                 }, 1000);
             }
 
+
+
+
+
+
+            /*
+                 *
+                     *  GAME SCREENS
+                 *
+             */
+
+
+
+
+
+            function clear() {
+                bufferCanvasCtx.fillStyle = "black";
+                bufferCanvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
             function drawOpening() {
                 ctx.save();
-
-                blank();
+                clear();
 
                 bufferCanvasCtx.fillStyle = "white";
                 bufferCanvasCtx.font = "50pt Arial";
@@ -828,10 +867,10 @@
 
                 bufferCanvasCtx.fillStyle = "white";
                 bufferCanvasCtx.font = "25pt Arial";
-                bufferCanvasCtx.fillText(startText, canvas.width/2 - 180, canvas.height/2 + 30);
+                bufferCanvasCtx.fillText(game.startText, canvas.width/2 - 180, canvas.height/2 + 30);
 
-                if (startText == "Press any key to start")  {startText = "";}
-                else { startText = "Press any key to start"; }
+                if (game.startText == "Press any key to start")  { game.startText = "";}
+                else { game.startText = "Press any key to start"; }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
@@ -840,8 +879,7 @@
 
             function drawEnding() {
                 ctx.save();
-
-                blank();
+                clear();
 
                 bufferCanvasCtx.font = "50pt Arial";
                 bufferCanvasCtx.fillStyle = "white";
@@ -849,10 +887,10 @@
 
                 bufferCanvasCtx.fillStyle = "white";
                 bufferCanvasCtx.font = "25pt Arial";
-                bufferCanvasCtx.fillText(restartText, canvas.width/2 - 150, canvas.height/2 + 90);
+                bufferCanvasCtx.fillText(game.restartText, canvas.width/2 - 150, canvas.height/2 + 90);
 
-                if (restartText == "Press any key to restart")  {restartText = "";}
-                else { restartText = "Press any key to restart"; }
+                if (game.restartText == "Press any key to restart")  { game.restartText = "";}
+                else { game.restartText = "Press any key to restart"; }
 
                 // copy the entire rendered image from the bugger canvas to the visible one
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
@@ -861,7 +899,8 @@
 
             function levelSplash() {
                 ctx.save();
-                blank();
+                clear();
+
                 bufferCanvasCtx.fillStyle = "white";
                 bufferCanvasCtx.font = "40pt Arial";
 
@@ -871,6 +910,7 @@
                 ctx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, bufferCanvas.height);
                 ctx.restore();
             }
+
 
 
 
@@ -1165,7 +1205,7 @@
                 // Score Count
                 bufferCanvasCtx.fillStyle = "#DDD";
                 bufferCanvasCtx.font = "20pt Arial";
-                var scoreText = "Score: " + score;
+                var scoreText = "Score: " + game.score;
                 bufferCanvasCtx.fillText(scoreText, 250, 45);
                 // Timer
                 bufferCanvasCtx.fillStyle = "#DDD";
@@ -1175,7 +1215,7 @@
                 bufferCanvasCtx.fillStyle = (extraLifeTextPos > 0)? "#FFF" : "#DDD";
                 bufferCanvasCtx.drawImage(heroImg, 900, 15);
                 bufferCanvasCtx.font = (extraLifeTextPos > 0)? "35pt Arial" : "30pt Arial";
-                var livesText = " x " + lives;
+                var livesText = " x " + game.lives;
                 bufferCanvasCtx.fillText(livesText, 1025, 57);
             }
 
