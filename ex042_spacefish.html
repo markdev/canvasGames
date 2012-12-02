@@ -76,10 +76,10 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["bigBloater", "spitFireFish"];
+                levelData[1]['enemies'] = ["crabCakes"];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
                 //levelData[1]['background'] = "img/spacefish/darkBack.png";
-                levelData[1]['config'] = { timer : 60, genrate : 400, droprate : 1 };
+                levelData[1]['config'] = { timer : 60, genrate : 2000, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
@@ -157,8 +157,8 @@
                         case "homingMissile":
                             blastArray[blastArray.length] = new homingMissile();
                             break;
-                        case "shield":
-                            blastArray[blastArray.length] = new shield();
+                        case "drill":
+                            blastArray[blastArray.length] = new drill();
                             break;
                     }
                 };
@@ -193,7 +193,7 @@
                         case "bouncyBalls":
                             hero.color = "blue";
                             break;
-                        case "shield":
+                        case "drill":
                             hero.color = "rgba(0, 255, 255, .25)";
                             break;
                     }
@@ -400,7 +400,7 @@
                 this.value = 80;
                 this.imgSrcA = "img/spacefish/spitFireFishA.png";
                 this.imgSrcB = "img/spacefish/spitFireFishB.png";
-                this.itemDrop = "shield";
+                this.itemDrop = "drill";
                 this.updatePos = function() {
                     this.x += this.velx;
                     if ((this.x < 900 && this.x > 875) || (this.x < 400 && this.x > 375)) {
@@ -429,6 +429,45 @@
                 }
             }
 
+            function crabCakes() {
+                this.w = 200;
+                this.h = 200;
+                this.x = canvas.width;
+                this.y = Math.random() * canvas.height - this.h;
+                this.color = "white";
+                this.dirx = "left";
+                this.velx = -10 - (Math.random() * 35);
+                this.diry = "up";
+                this.vely = -10 - (Math.random() * 35);
+                this.value = 80;
+                this.imgSrcA = "img/spacefish/crabCakesA.png";
+                this.imgSrcB = "img/spacefish/crabCakesB.png";
+                this.itemDrop = "drill";
+                this.updatePos = function() {
+                    this.x += this.velx;
+                    if (this.x < 0 && this.dirx == "left") {
+                        this.dirx = "right";
+                        this.velx = 10 + (Math.random() * 35);
+                    }
+                    if (this.x > canvas.width - this.w && this.dirx == "right") {
+                        this.dirx = "left";
+                        this.velx = - (10 + (Math.random() * 35));
+                    }
+                    this.y += this.vely;
+                    if (this.y < 0 && this.diry == "up") {
+                        this.diry = "down";
+                        this.vely = 10 + (Math.random() * 35);
+                    }
+                    if (this.y > canvas.height - this.h && this.diry == "down") {
+                        this.diry = "up";
+                        this.vely = - (10 + (Math.random() * 35));
+                    }
+                }
+                this.getHitBy = function(i, j) {
+                    kill(i, j);
+                }
+            }
+
 
             /*
             *   Weapons
@@ -436,6 +475,7 @@
             function peaShooterBlast() {
                 this.w = 30;
                 this.h = 10;
+                this.radius = 10;
                 this.y = hero.y + hero.h/2 - this.h/2;
                 this.x = hero.w;
                 this.color = "yellow";
@@ -450,6 +490,7 @@
                 this.timer = 150;
                 this.w = 80;
                 this.h = 10;
+                this.radius = 15;
                 this.y = hero.y + hero.h/2 - this.h/2 + loc;
                 this.x = hero.w;
                 this.color = "red";
@@ -464,12 +505,25 @@
                 this.timer = 150;
                 this.w = 20;
                 this.h = 70;
+                this.radius = 10;
                 this.y = hero.y;
                 this.x = hero.w;
                 this.color = "yellow";
                 this.velx = 15;
+                this.dir = "down";
+                this.vely = 25;
+                this.velyCount = 0;
                 this.updatePos = function() {
                     this.x += this.velx;
+                    if (this.dir == "down") {
+                        this.y += this.vely;
+                        this.velyCount++;
+                        if (this.velyCount >= 4) {this.velyCount = 0; this.dir = "up";}
+                    } else if (this.dir == "up") {
+                        this.y -= this.vely;
+                        this.velyCount++;
+                        if (this.velyCount >= 4) {this.velyCount = 0; this.dir = "down";}
+                    }
                 };
             }
 
@@ -478,6 +532,7 @@
                 this.timer = 150;
                 this.w = 60;
                 this.h = 30;
+                this.radius = 30;
                 this.y = hero.y;
                 this.x = hero.w;
                 this.color = "rgba(255,0,0,.25)";
@@ -496,6 +551,7 @@
                 this.timer = 150;
                 this.w = 20;
                 this.h = 20;
+                this.radius = 20;
                 this.y = hero.y + hero.h/2 - this.h/2;
                 this.x = hero.w;
                 this.color = "blue";
@@ -508,7 +564,7 @@
                 };
             }
 
-            function shield() {
+            function drill() {
                 this.type = "defense";
                 this.w = hero.w * 2;
                 this.h = hero.h;
@@ -595,26 +651,7 @@
 
             function addEnemy() {
                 var num = Math.floor(Math.random() * levelData[level]['enemies'].length);
-                    switch (levelData[level]['enemies'][num]) {
-                        case "bigBloater":
-                            enemyArray[enemyArray.length] = new bigBloater();
-                            break;
-                        case "speedyBlue":
-                            enemyArray[enemyArray.length] = new speedyBlue();
-                            break;
-                        case "sinusoidSwimmer":
-                            enemyArray[enemyArray.length] = new sinusoidSwimmer();
-                            break;
-                        case "homingFish":
-                            enemyArray[enemyArray.length] = new homingFish();
-                            break;
-                        case "splitFishBig":
-                            enemyArray[enemyArray.length] = new splitFishBig();
-                            break;
-                        case "spitFireFish":
-                            enemyArray[enemyArray.length] = new spitFireFish();
-                            break;
-                    }
+                eval("enemyArray[enemyArray.length] = new " + levelData[level]['enemies'][num]);
             }
 
             function shiftImgSrc() {
@@ -847,7 +884,7 @@
                             (hero.y < enemyArray[i].y + enemyArray[i].h)
                        ) {
                         switch (hero.defense) {
-                            case "shield":
+                            case "drill":
                                 enemyArray[i].getHitBy(0, i);
                                 break;
                             case "mega":
@@ -916,7 +953,7 @@
 
                 // Hero
                 var heroImg = new Image();
-                if (hero.defense == "shield") {
+                if (hero.defense == "drill") {
                     heroImg.src = (imgShiftVal == 0)? hero.imgSrcShieldA : hero.imgSrcShieldB;
                 } else if (hero.defense == "mega") {
                     heroImg.src = (imgShiftVal == 0)? hero.imgSrcMegaA : hero.imgSrcMegaB;
@@ -926,10 +963,21 @@
                 bufferCanvasCtx.drawImage(heroImg, hero.x, hero.y);
 
                 // Hero's blasts
+                bufferCanvasCtx.save();
                 for (var i = 0; i < blastArray.length; i++) {
                     bufferCanvasCtx.fillStyle = blastArray[i].color;
-                    bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
+                    //bufferCanvasCtx.fillRect(blastArray[i].x, blastArray[i].y, blastArray[i].w, blastArray[i].h);
+                    bufferCanvasCtx.beginPath();
+                    bufferCanvasCtx.arc(blastArray[i].x, blastArray[i].y, blastArray[i].radius, 0, 2 * Math.PI);
+                    // render the shadow
+                    bufferCanvasCtx.shadowOffsetX = 0;
+                    bufferCanvasCtx.shadowOffsetY = 0;
+                    bufferCanvasCtx.shadowColor = blastArray[i].color;
+                    bufferCanvasCtx.shadowBlur = 100;
+
+                    bufferCanvasCtx.fill();
                 }
+                bufferCanvasCtx.restore();
 
                 // Enemies
                 for (var i = 0; i < enemyArray.length; i++) {
@@ -962,7 +1010,7 @@
 
                 // Shield Timer
                 var barHeight = (hero.weaponTimer > 0)? 60 : 30;
-                if (hero.defense == "shield") {
+                if (hero.defense == "drill") {
                     bufferCanvasCtx.fillStyle = "rgba(0,255,255,.5)";
                     bufferCanvasCtx.fillRect(((hero.maxDefenseTimer - hero.defenseTimer)* (canvas.width/hero.maxDefenseTimer))/2, canvas.height-barHeight, (hero.defenseTimer * (canvas.width/hero.maxDefenseTimer)), 30);
                     bufferCanvasCtx.fillStyle = "white";
