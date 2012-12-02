@@ -76,41 +76,41 @@
             */
             var levelData = [];
                 levelData[1] = [];
-                levelData[1]['enemies'] = ["bigBloater", "bigBloater", "speedyBlue"];
+                levelData[1]['enemies'] = ["sinusoidSwimmer"];
                 levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[1]['config'] = { timer : 60, genrate : 900, droprate : 1 };
+                levelData[1]['config'] = { timer : 12, genrate : 900, droprate : 1 };
                 levelData[2] = [];
                 levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
                 levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
-                levelData[2]['config'] = { timer : 15, genrate : 800, droprate : 2 };
+                levelData[2]['config'] = { timer : 15, genrate : 800, droprate : 1 };
                 levelData[3] = [];
                 levelData[3]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
                 levelData[3]['background'] = "img/spacefish/blue-outer-space-stars-planets-nebulae-1680x1050-hd-wallpaper.jpg";
-                levelData[3]['config'] = { timer : 18, genrate : 700, droprate : 2 };
+                levelData[3]['config'] = { timer : 18, genrate : 700, droprate : 1 };
                 levelData[4] = [];
                 levelData[4]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
                 levelData[4]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-010.jpg";
-                levelData[4]['config'] = { timer : 21, genrate : 600, droprate : 2 };
+                levelData[4]['config'] = { timer : 21, genrate : 600, droprate : 1 };
                 levelData[5] = [];
                 levelData[5]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
                 levelData[5]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-004.jpg";
-                levelData[5]['config'] = { timer : 24, genrate : 500, droprate : 2 };
+                levelData[5]['config'] = { timer : 24, genrate : 500, droprate : 1 };
                 levelData[6] = [];
                 levelData[6]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
                 levelData[6]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-008.jpg";
-                levelData[6]['config'] = { timer : 27, genrate : 400, droprate : 2 };
+                levelData[6]['config'] = { timer : 27, genrate : 400, droprate : 1 };
                 levelData[7] = [];
                 levelData[7]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
                 levelData[7]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-009.jpg";
-                levelData[7]['config'] = { timer : 30, genrate : 300, droprate : 2 };
+                levelData[7]['config'] = { timer : 30, genrate : 300, droprate : 1 };
                 levelData[8] = [];
                 levelData[8]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
                 levelData[8]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-                levelData[8]['config'] = { timer : 33, genrate : 250, droprate : 2 };
+                levelData[8]['config'] = { timer : 33, genrate : 250, droprate : 1 };
                 levelData[9] = [];
                 levelData[9]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer", "homingFish", "splitFishBig", "spitFireFish"];
                 levelData[9]['background'] = "img/spacefish/Outer Space Wallpapers/Outer-Space-Artwork.jpg";
-                levelData[9]['config'] = { timer : 36, genrate : 220, droprate : 2 };
+                levelData[9]['config'] = { timer : 36, genrate : 220, droprate : 1 };
 
 
 
@@ -143,10 +143,13 @@
                             blastArray[blastArray.length] = new dualLaser(20);
                             blastArray[blastArray.length] = new dualLaser(-20);
                             break;
-                        case "bouncyBalls":
+                        case "bouncyBall":
                             blastArray[blastArray.length] = new bouncyBall(-10);
                             blastArray[blastArray.length] = new bouncyBall(0);
                             blastArray[blastArray.length] = new bouncyBall(10);
+                            break;
+                        case "shockwave":
+                            blastArray[blastArray.length] = new shockwave();
                             break;
                         case "shield":
                             blastArray[blastArray.length] = new shield();
@@ -266,7 +269,7 @@
                 this.value = 40;
                 this.imgSrcA = "img/spacefish/sinusoidSwimmerA.png";
                 this.imgSrcB = "img/spacefish/sinusoidSwimmerB.png";
-                this.itemDrop = "dualLaser";
+                this.itemDrop = "shockwave";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var sin = Math.sin(this.x * 2.5) * 80;
@@ -287,7 +290,7 @@
                 this.value = 50;
                 this.imgSrcA = "img/spacefish/homingFishA.png";
                 this.imgSrcB = "img/spacefish/homingFishB.png";
-                this.itemDrop = "bouncyBalls";
+                this.itemDrop = "bouncyBall";
                 this.updatePos = function() {
                     this.x += this.velx;
                     var home = ((this.y + this.h/2) > hero.y)? -10 : 10;
@@ -434,14 +437,9 @@
                 };
             }
 
-            function doubleLaser() {
-                this.type = "weapon";
-                this.color = "red";
-            }
-
             function dualLaser(loc) {
                 this.type = "weapon";
-                this.timer = 50;
+                this.timer = 150;
                 this.w = 80;
                 this.h = 10;
                 this.y = hero.y + hero.h/2 - this.h/2 + loc;
@@ -453,7 +451,23 @@
                 };
             }
 
+            function shockwave() {
+                this.type = "weapon";
+                this.timer = 150;
+                this.w = 20;
+                this.h = 70;
+                this.y = hero.y;
+                this.x = hero.w;
+                this.color = "yellow";
+                this.velx = 15;
+                this.updatePos = function() {
+                    this.x += this.velx;
+                };
+            }
+
             function bouncyBall(dir) {
+                this.type = "weapon";
+                this.timer = 150;
                 this.w = 20;
                 this.h = 20;
                 this.y = hero.y + hero.h/2 - this.h/2;
@@ -825,6 +839,7 @@
                             (hero.y < orbArray[i].y + orbArray[i].radius)
                        ) {
                         hero.itemUpdate(orbArray[i].weapon);
+                        //alert(hero.weapon);
                         orbArray.shift();
                         // MARK 3 this calls the hero's itemUpdate() function
                     }
@@ -921,12 +936,15 @@
                     bufferCanvasCtx.fillText(hero.defense, canvas.width/2 - 30, canvas.height - (barHeight - 25));
                 }
                 // Weapon Timer
+
                 if (hero.weaponTimer > 0) {
-                    bufferCanvasCtx.fillStyle = hero.color;
-                    bufferCanvasCtx.fillRect(((hero.maxWeaponTimer - hero.weaponTimer)* (canvas.width/hero.maxWeaponTimer))/2, canvas.height-30, (hero.weaponTimer * (canvas.width/hero.maxWeaponTimer)), 30);
-                    bufferCanvasCtx.fillStyle = "white";
-                    bufferCanvasCtx.font = "20pt Arial";
-                    bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
+                   eval("foo = new " + hero.weapon + ";");
+                   bufferCanvasCtx.fillStyle = foo.color;
+                    //bufferCanvasCtx.fillStyle = "red";
+                   bufferCanvasCtx.fillRect(((hero.maxWeaponTimer - hero.weaponTimer)* (canvas.width/hero.maxWeaponTimer))/2, canvas.height-30, (hero.weaponTimer * (canvas.width/hero.maxWeaponTimer)), 30);
+                   bufferCanvasCtx.fillStyle = "white";
+                   bufferCanvasCtx.font = "20pt Arial";
+                   bufferCanvasCtx.fillText(hero.weapon, canvas.width/2 - 30, canvas.height - 5);
                 }
 
                 // Dynamic Score Display
