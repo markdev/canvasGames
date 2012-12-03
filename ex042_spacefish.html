@@ -185,6 +185,7 @@
 
 
             function bigBloater() {
+                this.name = "Bill";
                 this.w = 300;
                 this.h = 150;
                 this.x = canvas.width;
@@ -204,6 +205,7 @@
             }
 
             function speedyBlue() {
+                this.name = "Sam";
                 this.w = 150;
                 this.h = 75;
                 this.x = canvas.width;
@@ -223,6 +225,7 @@
             }
 
             function sinusoidSwimmer() {
+                this.name = "Luciano";
                 this.w = 200;
                 this.h = 300;
                 this.x = canvas.width;
@@ -244,6 +247,7 @@
             }
 
             function homingFish() {
+                this.name = "Homer";
                 this.w = 230;
                 this.h = 115;
                 this.x = canvas.width;
@@ -265,6 +269,7 @@
             }
 
             function splitFishBig() {
+                this.name = "Darren";
                 this.w = 250;
                 this.h = 250;
                 this.x = canvas.width;
@@ -287,6 +292,7 @@
             }
 
             function splitFishHigh(x, y) {
+                this.name = "Dylan";
                 this.w = 125;
                 this.h = 75;
                 this.x = x;
@@ -307,6 +313,7 @@
             }
 
             function splitFishMid(x, y) {
+                this.name = "Dylan";
                 this.w = 125;
                 this.h = 75;
                 this.x = x;
@@ -326,6 +333,7 @@
             }
 
             function splitFishLow(x, y) {
+                this.name = "Dylan";
                 this.w = 125;
                 this.h = 75;
                 this.x = x;
@@ -346,6 +354,7 @@
             }
 
             function spitFireFish() {
+                this.name = "Frank";
                 this.w = 300;
                 this.h = 150;
                 this.x = canvas.width;
@@ -385,6 +394,7 @@
             }
 
             function crabCakes() {
+                this.name = "Crab Cakes";
                 this.w = 200;
                 this.h = 200;
                 this.x = canvas.width;
@@ -660,7 +670,11 @@
                 level.timer -= 1;
                 if(level.timer <= 0) {
                     game.level++;
-                    playLevel();
+                    if (game.level < 10) {
+                        playLevel();
+                    } else {
+                        alert("you win!");
+                    }
                 }
             }
 
@@ -1229,43 +1243,45 @@
 
         var levelData = [];
         levelData[1] = [];
-        levelData[1]['enemies'] = ["bigBloater", "speedyBlue","spitFireFish"];
+        levelData[1]['enemies'] = ["bigBloater", "speedyBlue"];
         levelData[1]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-        //levelData[1]['background'] = "img/spacefish/darkBack.png";
-        levelData[1]['config'] = { timer : 5, genrate : 2000, droprate : 1 };
+        levelData[1]['config'] = { timer : 20, genrate : 700, droprate : 1, default : "peaShooter" };
         levelData[2] = [];
         levelData[2]['enemies'] = ["bigBloater", "speedyBlue"];
         levelData[2]['background'] = "img/spacefish/Outer-Space-Artwork.jpg";
-        levelData[2]['config'] = { timer : 5, genrate : 800, droprate : 1 };
+        levelData[2]['config'] = { timer : 25, genrate : 667, droprate : 1, default : "peaShooter" };
         levelData[3] = [];
         levelData[3]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer"];
         levelData[3]['background'] = "img/spacefish/blue-outer-space-stars-planets-nebulae-1680x1050-hd-wallpaper.jpg";
-        levelData[3]['config'] = { timer : 5, genrate : 700, droprate : 1 };
+        levelData[3]['config'] = { timer : 30, genrate : 663, droprate : 1, default : "peaShooter" };
         levelData[4] = [];
         levelData[4]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
         levelData[4]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-010.jpg";
-        levelData[4]['config'] = { timer : 5, genrate : 600, droprate : 1 };
+        levelData[4]['config'] = { timer : 35, genrate : 600, droprate : 1, default : "peaShooter" };
         levelData[5] = [];
         levelData[5]['enemies'] = ["speedyBlue", "sinusoidSwimmer", "homingFish"];
         levelData[5]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-004.jpg";
-        levelData[5]['config'] = { timer : 24, genrate : 500, droprate : 1 };
+        levelData[5]['config'] = { timer : 40, genrate : 567, droprate : 1, default : "peaShooter"};
         levelData[6] = [];
         levelData[6]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
         levelData[6]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-008.jpg";
-        levelData[6]['config'] = { timer : 27, genrate : 400, droprate : 1 };
+        levelData[6]['config'] = { timer : 45, genrate : 533, droprate : 1, default : "dualLaser" };
         levelData[7] = [];
         levelData[7]['enemies'] = ["sinusoidSwimmer", "homingFish", "splitFishBig"];
         levelData[7]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-009.jpg";
-        levelData[7]['config'] = { timer : 30, genrate : 300, droprate : 1 };
+        levelData[7]['config'] = { timer : 50, genrate : 500, droprate : 1, default : "dualLaser" };
         levelData[8] = [];
         levelData[8]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
         levelData[8]['background'] = "img/spacefish/Outer Space Wallpapers/Outer Space-wallpaper-1600x900-013.jpg";
-        levelData[8]['config'] = { timer : 33, genrate : 250, droprate : 1 };
+        levelData[8]['config'] = { timer : 55, genrate : 467, droprate : 1, default : "dualLaser" };
         levelData[9] = [];
-        levelData[9]['enemies'] = ["bigBloater", "speedyBlue", "sinusoidSwimmer", "homingFish", "splitFishBig", "spitFireFish"];
+        levelData[9]['enemies'] = ["homingFish", "splitFishBig", "spitFireFish"];
         levelData[9]['background'] = "img/spacefish/Outer Space Wallpapers/Outer-Space-Artwork.jpg";
-        levelData[9]['config'] = { timer : 36, genrate : 220, droprate : 1 };
-
+        levelData[9]['config'] = { timer : 60, genrate : 433, droprate : 1, default : "dualLaser" };
+        levelData[10] = [];
+        levelData[10]['enemies'] = ["splitFishBig", "spitFireFish", "crabCakes"];
+        levelData[10]['background'] = "img/spacefish/Outer Space Wallpapers/Outer-Space-Artwork.jpg";
+        levelData[10]['config'] = { timer : 75, genrate : 400, droprate : 1, default : "dualLaser" };
 
 
 
